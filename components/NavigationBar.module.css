@@ -1,0 +1,51 @@
+/* Basics */
+
+.container {
+	position: absolute;
+	display: flex;
+	flex-flow: row nowrap;
+	width: calc(100vw - 100px);
+	height: 75px;
+	margin: 15px 50px;
+	z-index: 1;
+}
+.isHomepage {
+	
+	border-bottom: 1px solid var(--black);
+}
+
+/* Greybird logo */
+
+.logo {
+	position: relative;
+	flex: 0 0 200px;
+}
+.isHomepage .logo img {
+	filter: invert(0);
+}
+@media (prefers-color-scheme: dark) {
+	.logo img {
+		filter: invert(1);
+	}
+}
+
+/* Nav items*/
+
+.navLinkCollection {
+	flex: 1 0;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: flex-end;
+}
+.navLink {
+	display: flex;
+	align-items: center;
+	height: 100%;
+	margin: 0 10px;
+	padding: 0 5px;
+}
+
+.isHomepage .navLink {
+	color: var(--black);
+}

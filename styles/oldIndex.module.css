@@ -1,0 +1,11 @@
+.main {
+	min-height: 100vh;
+}
+
+.main header {
+	width: 100vw;
+	height: 750px;
+	background-image: url(/austin-skyline.jpg);
+	background-size: cover;
+	mask-image: linear-gradient(to bottom, black 25%, transparent 100%);
+}

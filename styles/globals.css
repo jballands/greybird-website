@@ -1,9 +1,13 @@
+@import './colors.css';
+
 html,
 body {
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  color: var(--black);
+  background: var(--bg-light);
 }
 
 a {
@@ -20,7 +24,7 @@ a {
     color-scheme: dark;
   }
   body {
-    color: white;
-    background: black;
+    color: var(--white);
+    background: var(--bg-dark);
   }
 }
