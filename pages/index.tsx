@@ -1,6 +1,8 @@
 import React, { Suspense, forwardRef } from 'react';
-import Globe from '../components/Globe';
+import dynamic from 'next/dynamic';
 import styles from '../styles/Index.module.css';
+
+const Globe = dynamic(() => import('../components/Globe'), { ssr: false });
 
 function destinations() {
 	return (

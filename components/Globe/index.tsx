@@ -4,22 +4,14 @@ import React, {
 	useState,
 	useRef,
 	forwardRef,
+	ForwardedRef,
+	MutableRefObject,
 } from 'react';
-import dynamic from 'next/dynamic';
 import { arcs } from './globeLandmarks';
-import { GlobeMethods } from 'react-globe.gl';
-
-const ReactGlobeGL = dynamic(() => import('react-globe.gl'), {
-	ssr: false,
-});
-
-// eslint-disable-next-line react/display-name
-const GlobeTemplate = forwardRef((props: any, ref) => (
-	<ReactGlobeGL {...props} ref={ref} />
-));
+import ReactGlobeGL, { GlobeMethods, GlobeProps } from 'react-globe.gl';
 
 function Globe() {
-	const globeRef = useRef();
+	const globeRef = useRef<GlobeMethods>();
 
 	const [countries, setCountries] = useState<any>([]);
 
@@ -30,19 +22,23 @@ function Globe() {
 		};
 
 		fetchGeoJson();
-
-		// aim at continental US centroid
-		globeRef.current?.pointOfView({ lat: 39.6, lng: -98.5, altitude: 2 });
-	}, [globeRef.current]);
+	}, []);
 
 	return (
 		<Suspense>
-			<GlobeTemplate
+			<ReactGlobeGL
 				ref={globeRef}
 				animateIn={false}
 				globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
 				arcsData={arcs}
 				arcColor="color"
+				onGlobeReady={() => {
+					globeRef.current?.pointOfView({
+						altitude: 1,
+						lat: 22.51,
+						lng: -81.43,
+					});
+				}}
 			/>
 		</Suspense>
 	);
