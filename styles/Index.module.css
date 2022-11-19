@@ -1,4 +1,16 @@
 .globeContainer {
+	position: relative;
 	width: 100%;
 	height: 100vh;
+}
+
+.whereToContainer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 50vw;
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+	justify-content: flex-end;
 }

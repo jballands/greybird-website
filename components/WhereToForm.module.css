@@ -1,0 +1,12 @@
+.form {
+	display: flex;
+	flex-flow: row nowrap;
+}
+
+.button {
+	background: #C70039;
+	color: #fff;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 7px;
+}

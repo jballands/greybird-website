@@ -1,6 +1,6 @@
 import { create } from 'domain';
 
-interface City {
+export interface City {
 	city: string;
 	code: string;
 	coordinates: {
@@ -9,7 +9,16 @@ interface City {
 	};
 }
 
-const cities: Record<string, City> = {
+export const austin: City = {
+	city: 'Austin',
+	code: 'AUS',
+	coordinates: {
+		lat: 30.11,
+		lng: -97.4,
+	},
+};
+
+export const destinations: Record<string, City> = {
 	abq: {
 		city: 'Albuquerque',
 		code: 'ABQ',
@@ -24,14 +33,6 @@ const cities: Record<string, City> = {
 		coordinates: {
 			lat: 33.38,
 			lng: -84.25,
-		},
-	},
-	aus: {
-		city: 'Austin',
-		code: 'AUS',
-		coordinates: {
-			lat: 30.11,
-			lng: -97.4,
 		},
 	},
 	bna: {
@@ -307,55 +308,3 @@ const cities: Record<string, City> = {
 		},
 	},
 };
-
-const createConnectionArc = (departs: City, arrives: City) => {
-	return {
-		startLat: departs.coordinates.lat,
-		startLng: departs.coordinates.lng,
-		endLat: arrives.coordinates.lat,
-		endLng: arrives.coordinates.lng,
-		color: '#fff',
-	};
-};
-
-const createAustinConnectionArc = (arrives: City) =>
-	createConnectionArc(cities.aus, arrives);
-
-export const arcs = [
-	createAustinConnectionArc(cities.den),
-	createAustinConnectionArc(cities.sea),
-	createAustinConnectionArc(cities.pdx),
-	createAustinConnectionArc(cities.ric),
-	createAustinConnectionArc(cities.jfk),
-	createAustinConnectionArc(cities.yvr),
-	createAustinConnectionArc(cities.sjc),
-	createAustinConnectionArc(cities.bur),
-	createAustinConnectionArc(cities.san),
-	createAustinConnectionArc(cities.smf),
-	createAustinConnectionArc(cities.slc),
-	createAustinConnectionArc(cities.bzn),
-	createAustinConnectionArc(cities.abq),
-	createAustinConnectionArc(cities.ord),
-	createAustinConnectionArc(cities.yyz),
-	createAustinConnectionArc(cities.msy),
-	createAustinConnectionArc(cities.mco),
-	createAustinConnectionArc(cities.mia),
-	createAustinConnectionArc(cities.atl),
-	createAustinConnectionArc(cities.e38),
-	createAustinConnectionArc(cities.mex),
-	createAustinConnectionArc(cities.cun),
-	createAustinConnectionArc(cities.pvr),
-	createAustinConnectionArc(cities.sjd),
-	createAustinConnectionArc(cities.gua),
-	createAustinConnectionArc(cities.lir),
-	createAustinConnectionArc(cities.sjo),
-	createAustinConnectionArc(cities.bze),
-	createAustinConnectionArc(cities.jac),
-	createAustinConnectionArc(cities.bos),
-	createAustinConnectionArc(cities.yul),
-	createAustinConnectionArc(cities.phl),
-	createAustinConnectionArc(cities.rdu),
-	createAustinConnectionArc(cities.sav),
-	createAustinConnectionArc(cities.las),
-	createAustinConnectionArc(cities.bna),
-];
