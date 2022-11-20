@@ -8,18 +8,40 @@ interface Arc {
 	startLng: number;
 	endLat: number;
 	endLng: number;
+	color: string | string[];
+	dashLength: number;
+	dashGap: number;
+	animateTimeMs: number;
 }
 
-const makeArc = (start: City, end: City): Arc => ({
+const makeArc = (
+	start: City,
+	end: City,
+	color: string | string[],
+	animateTimeMs = 0,
+	dashLength: number = 1,
+	dashGap = 0
+): Arc => ({
 	startLat: start.coordinates.lat,
 	startLng: start.coordinates.lng,
 	endLat: end.coordinates.lat,
 	endLng: end.coordinates.lng,
+	color,
+	animateTimeMs,
+	dashLength,
+	dashGap,
 });
 
 const getInitialArcs = () => {
 	return Object.entries(destinations).map(([_, city]) => {
-		return makeArc(austin, city);
+		return makeArc(
+			austin,
+			city,
+			[`rgba(55, 77, 117, 1)`, `rgba(55, 77, 117, 0.25)`],
+			30000,
+			0.1,
+			0.5
+		);
 	});
 };
 
@@ -30,22 +52,30 @@ function Globe() {
 	const { connection } = useHomepage();
 
 	useEffect(() => {
+		if (globeRef.current) {
+			globeRef.current.controls().enabled = false;
+		}
+	}, []);
+
+	useEffect(() => {
 		if (!connection) {
 			return;
 		}
 
 		const [depart, arrive] = connection;
-		setArcs([makeArc(depart, arrive)]);
+		setArcs([makeArc(depart, arrive, ['#FFC300', '#C70039'], 1)]);
 
 		// Set the point of view
-		globeRef.current?.pointOfView(
-			{
-				altitude: 0.5,
-				lat: (arrive.coordinates.lat + depart.coordinates.lat) / 2,
-				lng: (arrive.coordinates.lng + depart.coordinates.lng) / 2,
-			},
-			1000
-		);
+		if (globeRef.current) {
+			globeRef.current?.pointOfView(
+				{
+					altitude: 0.5,
+					lat: (arrive.coordinates.lat + depart.coordinates.lat) / 2,
+					lng: (arrive.coordinates.lng + depart.coordinates.lng) / 2 + 12,
+				},
+				500
+			);
+		}
 	}, [connection]);
 
 	return (
@@ -56,10 +86,12 @@ function Globe() {
 				globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
 				arcsData={arcs}
 				arcDashInitialGap={() => Math.random()}
-				arcColor={() => [`rgba(55, 77, 117, 1)`, `rgba(55, 77, 117, 0.25)`]}
-				arcDashLength={0.1}
-				arcDashGap={0.5}
-				arcDashAnimateTime={30000}
+				arcColor="color"
+				arcDashLength="dashLength"
+				arcDashGap="dashGap"
+				arcDashAnimateTime="animateTimeMs"
+				arcStroke={0.1}
+				arcsTransitionDuration={250}
 				onGlobeReady={() => {
 					globeRef.current?.pointOfView({
 						altitude: 1,

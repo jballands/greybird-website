@@ -8,7 +8,7 @@ function WhereToForm() {
 
 	const handleAusPdx = () => {
 		setDeparting(austin);
-		setArriving(destinations.pdx);
+		setArriving(destinations.sea);
 	};
 
 	return (
