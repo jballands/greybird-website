@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { City } from './globeLandmarks';
+import { City } from '../pages/api/data';
 
 type Connection = readonly [departing: City, arriving: City];
 

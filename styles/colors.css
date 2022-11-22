@@ -2,6 +2,11 @@
 	--white: #fff;
 	--black: #000;
 
-	--bg-light: #FCF3E1;
+	--bg-light: #fcf3e1;
 	--bg-dark: #000011;
+
+	--gb-dark-red: #900c3f;
+	--gb-red: #c70039;
+	--gb-orange: #ff5733;
+	--gb-yellow: #ffc300;
 }
