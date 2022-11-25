@@ -9,7 +9,7 @@ function destinations() {
 	return (
 		<HomepageContext>
 			<main>
-				{/* <Globe /> */}
+				<Globe />
 				<WhereToForm />
 			</main>
 		</HomepageContext>

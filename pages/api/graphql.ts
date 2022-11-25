@@ -3,7 +3,14 @@ import fs from 'fs';
 import { createYoga, createSchema } from 'graphql-yoga';
 import { typeDefs } from './schema';
 import { ResolversTypes } from './resolversTypes';
-import { coordinates, destinations, routes } from './data';
+import {
+	coordinates,
+	destinations,
+	routes,
+	City,
+	Coordinate,
+	Route,
+} from './data';
 
 const resolvers: ResolversTypes = {
 	Query: {

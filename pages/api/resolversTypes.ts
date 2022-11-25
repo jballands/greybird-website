@@ -18,7 +18,7 @@ export type City = {
   coordinate: Coordinate;
   id: Scalars['ID'];
   name: Scalars['String'];
-  routes: Array<Maybe<Route>>;
+  routes: Array<Route>;
 };
 
 export type Coordinate = {
@@ -30,9 +30,9 @@ export type Coordinate = {
 
 export type Query = {
   __typename?: 'Query';
-  coordinates?: Maybe<Array<Maybe<Coordinate>>>;
-  destinations?: Maybe<Array<Maybe<City>>>;
-  routes?: Maybe<Array<Maybe<Route>>>;
+  coordinates: Array<Coordinate>;
+  destinations: Array<City>;
+  routes: Array<Route>;
 };
 
 
@@ -161,7 +161,7 @@ export type CityResolvers<ContextType = any, ParentType extends ResolversParentT
   coordinate?: Resolver<ResolversTypes['Coordinate'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  routes?: Resolver<Array<Maybe<ResolversTypes['Route']>>, ParentType, ContextType>;
+  routes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -173,9 +173,9 @@ export type CoordinateResolvers<ContextType = any, ParentType extends ResolversP
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  coordinates?: Resolver<Maybe<Array<Maybe<ResolversTypes['Coordinate']>>>, ParentType, ContextType, Partial<QueryCoordinatesArgs>>;
-  destinations?: Resolver<Maybe<Array<Maybe<ResolversTypes['City']>>>, ParentType, ContextType, Partial<QueryDestinationsArgs>>;
-  routes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Route']>>>, ParentType, ContextType, Partial<QueryRoutesArgs>>;
+  coordinates?: Resolver<Array<ResolversTypes['Coordinate']>, ParentType, ContextType, Partial<QueryCoordinatesArgs>>;
+  destinations?: Resolver<Array<ResolversTypes['City']>, ParentType, ContextType, Partial<QueryDestinationsArgs>>;
+  routes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType, Partial<QueryRoutesArgs>>;
 }>;
 
 export type RouteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Route'] = ResolversParentTypes['Route']> = ResolversObject<{

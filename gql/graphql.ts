@@ -19,7 +19,7 @@ export type City = {
   coordinate: Coordinate;
   id: Scalars['ID'];
   name: Scalars['String'];
-  routes: Array<Maybe<Route>>;
+  routes: Array<Route>;
 };
 
 export type Coordinate = {
@@ -31,9 +31,9 @@ export type Coordinate = {
 
 export type Query = {
   __typename?: 'Query';
-  coordinates?: Maybe<Array<Maybe<Coordinate>>>;
-  destinations?: Maybe<Array<Maybe<City>>>;
-  routes?: Maybe<Array<Maybe<Route>>>;
+  coordinates: Array<Coordinate>;
+  destinations: Array<City>;
+  routes: Array<Route>;
 };
 
 
@@ -67,7 +67,7 @@ export type Route = {
 export type FetchInitialRoutesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FetchInitialRoutesQuery = { __typename?: 'Query', routes?: Array<{ __typename?: 'Route', depart: { __typename?: 'City', coordinate: { __typename?: 'Coordinate', lat: number, lng: number } }, arrive: { __typename?: 'City', coordinate: { __typename?: 'Coordinate', lat: number, lng: number } } } | null> | null };
+export type FetchInitialRoutesQuery = { __typename?: 'Query', routes: Array<{ __typename?: 'Route', depart: { __typename?: 'City', coordinate: { __typename?: 'Coordinate', lat: number, lng: number } }, arrive: { __typename?: 'City', coordinate: { __typename?: 'Coordinate', lat: number, lng: number } } }> };
 
 
 export const FetchInitialRoutesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FetchInitialRoutes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routes"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"depart"},"value":{"kind":"StringValue","value":"aus","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"depart"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lat"}},{"kind":"Field","name":{"kind":"Name","value":"lng"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"arrive"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lat"}},{"kind":"Field","name":{"kind":"Name","value":"lng"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FetchInitialRoutesQuery, FetchInitialRoutesQueryVariables>;

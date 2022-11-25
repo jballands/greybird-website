@@ -1,4 +1,5 @@
 import type { FetchInitialRoutesQuery } from '../gql/graphql';
+
 import React, { Suspense, useEffect, useState, useRef } from 'react';
 import ReactGlobeGL, { GlobeMethods, GlobeProps } from 'react-globe.gl';
 import { useResizeDetector } from 'react-resize-detector';
@@ -19,8 +20,8 @@ interface Arc {
 }
 
 const makeArc = (
-	start: FetchInitialRoutesQuery,
-	end: PartialCoordinateFragment,
+	start: { lat: number; lng: number },
+	end: { lat: number; lng: number },
 	color: string | string[],
 	animateTimeMs = 0,
 	dashLength: number = 1,
@@ -37,7 +38,7 @@ const makeArc = (
 });
 
 const getInitialArcs = (initialRoutes: FetchInitialRoutesQuery) => {
-	return initialRoutes.routes?.map(route => {
+	return initialRoutes.routes.map(route => {
 		return makeArc(
 			route.depart.coordinate,
 			route.arrive.coordinate,
@@ -69,19 +70,12 @@ const initialQuery = /* GraphQL */ `
 `;
 
 function Globe() {
+	const [arcs, setArcs] = useState<Arc[]>();
+
 	const { data: initialRoutes, error } = useSWR<FetchInitialRoutesQuery>(
 		initialQuery,
 		async query => request('/api/graphql', query)
 	);
-
-	console.dir(initialRoutes);
-
-	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
-
-	const globeRef = useRef<GlobeMethods>();
-	const [arcs, setArcs] = useState<Arc[]>(() => getInitialArcs(initialRoutes));
-
-	const { connection } = useHomepage();
 
 	useEffect(() => {
 		if (globeRef.current) {
@@ -90,20 +84,34 @@ function Globe() {
 	}, []);
 
 	useEffect(() => {
+		if (initialRoutes) {
+			setArcs(getInitialArcs(initialRoutes));
+		}
+	}, [initialRoutes]);
+
+	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
+
+	const globeRef = useRef<GlobeMethods>();
+
+	const { connection } = useHomepage();
+
+	useEffect(() => {
 		if (!connection) {
 			return;
 		}
 
 		const [depart, arrive] = connection;
-		setArcs([makeArc(depart, arrive, ['#FFC300', '#C70039'], 1)]);
+		setArcs([
+			makeArc(depart.coordinate, arrive.coordinate, ['#FFC300', '#C70039'], 1),
+		]);
 
 		// Set the point of view
 		if (globeRef.current) {
 			globeRef.current?.pointOfView(
 				{
 					altitude: 0.5,
-					lat: (arrive.coordinates.lat + depart.coordinates.lat) / 2,
-					lng: (arrive.coordinates.lng + depart.coordinates.lng) / 2 + 12,
+					lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
+					lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
 				},
 				500
 			);

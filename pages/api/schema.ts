@@ -1,14 +1,14 @@
 export const typeDefs = `
 	type Query {
-		destinations(id: String, name: String): [City]
-		coordinates(id: String): [Coordinate]
-		routes(flightNumber: Int, depart: ID, arrive: ID, elevated: Boolean): [Route]
+		destinations(id: String, name: String): [City!]!
+		coordinates(id: String): [Coordinate!]!
+		routes(flightNumber: Int, depart: ID, arrive: ID, elevated: Boolean): [Route!]!
 	}
 
 	type City {
 		id: ID!
 		name: String!
-		routes: [Route]!
+		routes: [Route!]!
 		coordinate: Coordinate!
 	}
 
