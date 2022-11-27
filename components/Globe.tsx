@@ -1,12 +1,18 @@
-import type { FetchInitialRoutesQuery } from '../gql/graphql';
+import type { GlobeMethods, GlobeProps } from 'react-globe.gl';
+import type {
+	FetchInitialRoutesQuery,
+	FetchInitialRoutesQueryVariables,
+	Coordinate,
+} from '../graphql/gen/graphql';
 
+import dynamic from 'next/dynamic';
 import React, { Suspense, useEffect, useState, useRef } from 'react';
-import ReactGlobeGL, { GlobeMethods, GlobeProps } from 'react-globe.gl';
+import ReactGlobeGL from 'react-globe.gl';
 import { useResizeDetector } from 'react-resize-detector';
-import { request } from 'graphql-request';
-import useSWR from 'swr';
-import { useHomepage } from './HomepageContext';
+import useGraphQL from './useGraphQL';
 import styles from './Globe.module.css';
+
+// const ReactGlobeGL = dynamic(() => import('react-globe.gl'));
 
 interface Arc {
 	startLat: number;
@@ -51,8 +57,8 @@ const getInitialArcs = (initialRoutes: FetchInitialRoutesQuery) => {
 };
 
 const initialQuery = /* GraphQL */ `
-	query FetchInitialRoutes {
-		routes(depart: "aus") {
+	query fetchInitialRoutes($depart: ID!, $arrive: ID) {
+		routes(depart: $depart, arrive: $arrive) {
 			depart {
 				coordinate {
 					lat
@@ -70,12 +76,16 @@ const initialQuery = /* GraphQL */ `
 `;
 
 function Globe() {
+	const globeRef = useRef<GlobeMethods>();
+
 	const [arcs, setArcs] = useState<Arc[]>();
 
-	const { data: initialRoutes, error } = useSWR<FetchInitialRoutesQuery>(
-		initialQuery,
-		async query => request('/api/graphql', query)
-	);
+	const { data: initialRoutes, error } = useGraphQL<
+		FetchInitialRoutesQuery,
+		FetchInitialRoutesQueryVariables
+	>('fetchInitialRoutes', initialQuery, {
+		depart: 'aus',
+	});
 
 	useEffect(() => {
 		if (globeRef.current) {
@@ -91,32 +101,28 @@ function Globe() {
 
 	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
 
-	const globeRef = useRef<GlobeMethods>();
+	// useEffect(() => {
+	// 	if (!connection) {
+	// 		return;
+	// 	}
 
-	const { connection } = useHomepage();
+	// 	const [depart, arrive] = connection;
+	// 	setArcs([
+	// 		makeArc(depart.coordinate, arrive.coordinate, ['#FFC300', '#C70039'], 1),
+	// 	]);
 
-	useEffect(() => {
-		if (!connection) {
-			return;
-		}
-
-		const [depart, arrive] = connection;
-		setArcs([
-			makeArc(depart.coordinate, arrive.coordinate, ['#FFC300', '#C70039'], 1),
-		]);
-
-		// Set the point of view
-		if (globeRef.current) {
-			globeRef.current?.pointOfView(
-				{
-					altitude: 0.5,
-					lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
-					lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
-				},
-				500
-			);
-		}
-	}, [connection]);
+	// 	// Set the point of view
+	// 	if (globeRef.current) {
+	// 		globeRef.current?.pointOfView(
+	// 			{
+	// 				altitude: 0.5,
+	// 				lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
+	// 				lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
+	// 			},
+	// 			500
+	// 		);
+	// 	}
+	// }, [connection]);
 
 	return (
 		<div className={styles.container} ref={resizeDetectorRef}>

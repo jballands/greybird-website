@@ -1,5 +1,9 @@
 schema: ./graphql/schema.graphql
+documents: './components/**/*.{ts,tsx}'
+overwrite: true
 generates:
+  ./graphql/gen/:
+    preset: 'client'
   ./graphql/gen/types.ts:
     plugins:
       - '@graphql-codegen/typescript'

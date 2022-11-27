@@ -63,23 +63,35 @@ const resolvers: Resolvers = {
 			});
 		},
 		routes: (_, { arrive, depart, elevated, flightNumber }) => {
-			const lowercaseArrive = arrive?.toLowerCase() ?? '';
-			const lowercaseDepart = depart?.toLowerCase() ?? '';
+			const lowercaseArrive = arrive?.toLowerCase();
+			const lowercaseDepart = depart?.toLowerCase();
 
+			// This is an AND operation, not an OR operation. That is, all the criteria have to be
+			// satisfied for a route to be selected
 			return routes.filter(rte => {
-				if (rte.elevated === elevated) {
-					return true;
+				if (elevated !== undefined && rte.elevated !== elevated) {
+					return false;
 				}
-				if (rte.flightNumber === flightNumber) {
-					return true;
+
+				if (flightNumber !== undefined && rte.flightNumber !== flightNumber) {
+					return false;
 				}
-				if (rte.arrive.toLowerCase() === lowercaseArrive) {
-					return true;
+
+				if (
+					lowercaseDepart !== undefined &&
+					rte.depart.toLowerCase() !== lowercaseDepart
+				) {
+					return false;
 				}
-				if (rte.depart.toLowerCase() === lowercaseDepart) {
-					return true;
+
+				if (
+					lowercaseArrive !== undefined &&
+					rte.arrive.toLowerCase() !== lowercaseArrive
+				) {
+					return false;
 				}
-				return false;
+
+				return true;
 			});
 		},
 	},

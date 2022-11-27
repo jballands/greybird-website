@@ -1,0 +1,27 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+.input {
+	outline: none;
+	border: 1px solid #333;
+	background: transparent;
+	padding: 10px 15px;
+	margin: 5px 0;
+	font-size: 26px;
+	width: 100%;
+	color: white;
+}
+
+.popoverContainer {
+	position: relative;
+}
+
+.popover {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	height: 50px;
+	background: white;
+}

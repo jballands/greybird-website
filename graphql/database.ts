@@ -52,7 +52,7 @@ export const destinations: CityModel[] = [
 	{ id: 'slc', name: 'Salt Lake City' }, // 3
 	{ id: 'smf', name: 'Sacramento' }, // 3
 	{ id: 'yul', name: 'Montréal' }, // 1
-	{ id: 'yvr', name: 'Vancouver/' }, // 1
+	{ id: 'yvr', name: 'Vancouver' }, // 1
 	{ id: 'yyz', name: 'Toronto' }, // 1
 ];
 
