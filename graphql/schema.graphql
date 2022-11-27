@@ -1,6 +1,6 @@
 type Query {
 	destinations(id: String, name: String): [City]!
-	coordinates(id: String): [Coordinate]!
+	coordinates(id: String): Coordinate!
 	routes(flightNumber: Int, depart: ID, arrive: ID, elevated: Boolean): [Route]!
 }
 

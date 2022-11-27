@@ -2,9 +2,10 @@ import type { Resolvers } from './gen/types';
 
 import { loadSchemaSync } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { coordinates, destinations } from './database';
+import { createSchema } from 'graphql-yoga';
+import { coordinates, destinations, routes } from './database';
 
-const typeDefs = loadSchemaSync('./schema.graphql', {
+const typeDefs = loadSchemaSync('./graphql/schema.graphql', {
 	loaders: [new GraphQLFileLoader()],
 });
 
@@ -38,25 +39,53 @@ const resolvers: Resolvers = {
 		elevated: parent => parent.elevated,
 		flightNumber: parent => parent.flightNumber,
 		depart: parent =>
-			dangerousFind(destinations, city => city.id === parent.id),
+			dangerousFind(destinations, city => city.id === parent.depart),
 		arrive: parent =>
-			dangerousFind(destinations, city => city.id === parent.id),
+			dangerousFind(destinations, city => city.id === parent.arrive),
 	},
 	Query: {
-		coordinates: (parent: unknown, { id }) => {
-			if (!id) {
-				return [];
-			}
-			return dangerousFind(coordinates, coord => coord.id === id),
-		},
-		destinations: (parent: unknown, { id, name }) => {	
-			const results = [];
+		coordinates: (_, { id }) =>
+			dangerousFind(coordinates, coord => coord.id === id),
+		destinations: (_, { id, name }) => {
+			const lowercaseName = name?.toLowerCase() ?? '';
 
-			destinations.forEach(city => {
-				
+			return destinations.filter(city => {
+				if (city.id === id) {
+					return true;
+				}
+				if (city.id.toLowerCase().includes(lowercaseName)) {
+					return true;
+				}
+				if (city.name.toLowerCase().includes(lowercaseName)) {
+					return true;
+				}
+				return false;
 			});
+		},
+		routes: (_, { arrive, depart, elevated, flightNumber }) => {
+			const lowercaseArrive = arrive?.toLowerCase() ?? '';
+			const lowercaseDepart = depart?.toLowerCase() ?? '';
 
-			return results;
-		}
+			return routes.filter(rte => {
+				if (rte.elevated === elevated) {
+					return true;
+				}
+				if (rte.flightNumber === flightNumber) {
+					return true;
+				}
+				if (rte.arrive.toLowerCase() === lowercaseArrive) {
+					return true;
+				}
+				if (rte.depart.toLowerCase() === lowercaseDepart) {
+					return true;
+				}
+				return false;
+			});
+		},
 	},
 };
+
+export default createSchema({
+	typeDefs,
+	resolvers,
+});
