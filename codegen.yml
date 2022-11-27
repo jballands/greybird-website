@@ -1,0 +1,14 @@
+schema: ./graphql/schema.graphql
+generates:
+  ./graphql/gen/types.ts:
+    plugins:
+      - '@graphql-codegen/typescript'
+      - '@graphql-codegen/typescript-resolvers'
+    config:
+      avoidOptionals: true
+      # Maps model types to the resolver type; must be in reference to the output
+      # file location!
+      mappers:
+        Coordinate: ../database#CoordinateModel
+        City: ../database#CityModel
+        Route: ../database#RouteModel

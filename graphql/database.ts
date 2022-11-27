@@ -1,11 +1,9 @@
-import { create } from 'domain';
-
-export interface City {
+export interface CityModel {
 	id: string;
 	name: string;
 }
 
-export interface Route {
+export interface RouteModel {
 	id: string;
 	flightNumber: number;
 	depart: string;
@@ -14,13 +12,13 @@ export interface Route {
 	seasonal?: 'winter' | 'summer';
 }
 
-export interface Coordinate {
+export interface CoordinateModel {
 	id: string;
 	lat: number;
 	lng: number;
 }
 
-export const destinations: City[] = [
+export const destinations: CityModel[] = [
 	{ id: 'aus', name: 'Austin' }, //
 	{ id: 'abq', name: 'Albuquerque' }, // 1
 	{ id: 'atl', name: 'Atlanta' }, //
@@ -58,7 +56,7 @@ export const destinations: City[] = [
 	{ id: 'yyz', name: 'Toronto' }, // 1
 ];
 
-export const routes: Route[] = [
+export const routes: RouteModel[] = [
 	// jfk
 	{ id: '1', flightNumber: 1, depart: 'aus', arrive: 'jfk', elevated: false },
 	{ id: '2', flightNumber: 2, depart: 'jfk', arrive: 'aus', elevated: false },
@@ -449,7 +447,7 @@ export const routes: Route[] = [
 	},
 ];
 
-export const coordinates: Coordinate[] = [
+export const coordinates: CoordinateModel[] = [
 	{ id: 'aus', lat: 30.11, lng: -97.4 },
 	{ id: 'abq', lat: 35.02, lng: -106.36 },
 	{ id: 'atl', lat: 33.38, lng: -84.25 },
