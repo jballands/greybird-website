@@ -1,6 +1,7 @@
 .container {
 	display: flex;
 	flex-flow: column nowrap;
+	margin: 5px 0;
 }
 
 .input {
@@ -8,7 +9,6 @@
 	border: 1px solid #333;
 	background: transparent;
 	padding: 10px 15px;
-	margin: 5px 0;
 	font-size: 26px;
 	width: 100%;
 	color: white;
@@ -18,10 +18,36 @@
 	position: relative;
 }
 
-.popover {
+@keyframes loading-bar-animation {
+	0% {
+		transform-origin: center left;
+		transform: scaleX(0);
+	}
+	50% {
+		transform-origin: center left;
+		transform: scaleX(100%);
+	}
+	51% {
+		transform-origin: center right;
+		transform: scaleX(100%);
+	}
+	100% {
+		transform-origin: center right;
+		transform: scaleX(0%);
+	}
+}
+
+.loadingBar {
 	position: absolute;
 	width: 100%;
+	height: 3px;
+	background-image: linear-gradient(
+		to right,
+		var(--gb-dark-red),
+		var(--gb-red),
+		var(--gb-orange),
+		var(--gb-yellow)
+	);
 	top: 0;
-	height: 50px;
-	background: white;
+	animation: loading-bar-animation 0.7s ease-out infinite;
 }

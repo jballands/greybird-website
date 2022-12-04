@@ -1,0 +1,28 @@
+.container {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	background: var(--bg-dark);
+	border: 1px solid rgb(21, 32, 54);
+	padding: 10px;
+	display: flex;
+	flex-flow: column nowrap;
+	border: none;
+	color: var(--white);
+}
+
+.container:hover {
+	background: #333;
+	cursor: pointer;
+}
+
+.name {
+	font-size: 24px;
+	font-weight: 700;
+	color: --var(--white);
+}
+
+.id {
+	text-transform: uppercase;
+	color: --var(--white);
+}
