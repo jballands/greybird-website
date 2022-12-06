@@ -50,13 +50,19 @@ const resolvers: Resolvers = {
 			const lowercaseName = name?.toLowerCase() ?? '';
 
 			return destinations.filter(city => {
-				if (city.id === id) {
+				if (id !== undefined && city.id === id) {
 					return true;
 				}
-				if (city.id.toLowerCase().includes(lowercaseName)) {
+				if (
+					name !== undefined &&
+					city.id.toLowerCase().includes(lowercaseName)
+				) {
 					return true;
 				}
-				if (city.name.toLowerCase().includes(lowercaseName)) {
+				if (
+					name !== undefined &&
+					city.name.toLowerCase().includes(lowercaseName)
+				) {
 					return true;
 				}
 				return false;

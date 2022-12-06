@@ -1,20 +1,25 @@
-import React from 'react';
 import type { FindCityQuery } from '../../graphql/gen/graphql';
+
+import React from 'react';
 import styles from './WhereToFormInputPopover.module.css';
 
 type FindCityQueryDestinations = FindCityQuery['destinations'];
 
 interface WhereToFormInputPopoverProps {
 	results?: FindCityQueryDestinations;
+	onDestinationClick: (destination: FindCityQueryDestinations[0]) => unknown;
 }
 
-function WhereToFormInputPopover({ results }: WhereToFormInputPopoverProps) {
+function WhereToFormInputPopover({
+	results,
+	onDestinationClick,
+}: WhereToFormInputPopoverProps) {
 	if (!results) {
 		return <div>No results</div>;
 	}
 
-	const handleClick = (destination: any) => {
-		console.dir(destination);
+	const handleClick = (destination: FindCityQueryDestinations[0]) => {
+		onDestinationClick(destination);
 	};
 
 	return (

@@ -10,7 +10,7 @@ import styles from './WhereToFormInput.module.css';
 
 const findCityQuery = /* GraphQL */ `
 	query findCity($search: String) {
-		destinations(name: $search) {
+		destinations(id: $search, name: $search) {
 			id
 			name
 		}
@@ -18,10 +18,16 @@ const findCityQuery = /* GraphQL */ `
 `;
 
 interface WhereToFormInputProps {
+	id: string;
 	placeholder: string;
+	onSelectDestination: (id: string) => unknown;
 }
 
-function WhereToFormInput({ placeholder }: WhereToFormInputProps) {
+function WhereToFormInput({
+	id,
+	placeholder,
+	onSelectDestination,
+}: WhereToFormInputProps) {
 	const [departTextInput, setDepartTextInput] = useState<string>('');
 	const [isFocused, setIsFocused] = useState(false);
 
@@ -29,7 +35,7 @@ function WhereToFormInput({ placeholder }: WhereToFormInputProps) {
 		FindCityQuery,
 		FindCityQueryVariables
 	>(
-		'findCity',
+		`findCity`,
 		() => {
 			return (departTextInput?.length ?? -1) >= 3 ? findCityQuery : undefined;
 		},
@@ -48,13 +54,26 @@ function WhereToFormInput({ placeholder }: WhereToFormInputProps) {
 	};
 
 	const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+		const currentTarget = e.currentTarget;
+
+		requestAnimationFrame(() => {
+			if (!currentTarget.contains(document.activeElement)) {
+				setIsFocused(false);
+			}
+		});
+	};
+
+	const handleDestinationClick = (
+		destination: FindCityQuery['destinations'][0]
+	) => {
+		onSelectDestination(destination.id);
 		setIsFocused(false);
 	};
 
-	const canShowResults = (departTextInput?.length ?? -1) >= 3 && !isValidating;
+	const canShowResults = (departTextInput?.length ?? -1) >= 3 && isFocused;
 
 	return (
-		<div className={styles.container} onBlur={handleBlur} tabIndex={0}>
+		<div className={styles.container} onBlur={handleBlur}>
 			<input
 				className={styles.input}
 				placeholder={placeholder}
@@ -66,7 +85,10 @@ function WhereToFormInput({ placeholder }: WhereToFormInputProps) {
 			<div className={styles.popoverContainer}>
 				{isValidating && <div className={styles.loadingBar} />}
 				{canShowResults && (
-					<WhereToFormInputPopover results={data?.destinations} />
+					<WhereToFormInputPopover
+						results={data?.destinations}
+						onDestinationClick={handleDestinationClick}
+					/>
 				)}
 			</div>
 		</div>

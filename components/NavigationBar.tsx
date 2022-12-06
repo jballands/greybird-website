@@ -8,7 +8,7 @@ function NavigationBar() {
 	return (
 		<nav className={styles.container}>
 			<div className={styles.logo}>
-				<Link href="/">
+				<Link href="/" aria-label="Home">
 					<Image src="/greybird-logo.svg" alt="Greybird logo" fill />
 				</Link>
 			</div>
@@ -20,7 +20,11 @@ function NavigationBar() {
 				<Link className={styles.navLink} href="/about">
 					About
 				</Link>
-				<Link className={styles.navLink} href="/plus">
+				<Link
+					className={styles.navLink}
+					href="/plus"
+					aria-label="Greybird Plus"
+				>
 					<Image
 						src="/greybird-plus.svg"
 						alt="Greybird Plus"

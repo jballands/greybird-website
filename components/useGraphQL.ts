@@ -19,8 +19,22 @@ function useGraphQL<QueryResponse, Variables>(
 	variables?: Variables
 ) {
 	const { data, error, isValidating } = useSWR<QueryResponse>(
-		query,
+		() => {
+			if (typeof query === 'string') {
+				return [query, variables];
+			}
+
+			const result = query();
+
+			if (result) {
+				return [result, variables];
+			}
+
+			return null;
+		},
 		async q => {
+			console.dir(q);
+
 			const requestBody: GraphQLRequest<Variables> = {
 				operationName,
 				query: q,
