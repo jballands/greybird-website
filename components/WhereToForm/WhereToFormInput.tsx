@@ -20,7 +20,7 @@ const findCityQuery = /* GraphQL */ `
 interface WhereToFormInputProps {
 	id: string;
 	placeholder: string;
-	onSelectDestination: (id: string) => unknown;
+	onSelectDestination: (id: string | undefined) => unknown;
 }
 
 function WhereToFormInput({
@@ -28,8 +28,9 @@ function WhereToFormInput({
 	placeholder,
 	onSelectDestination,
 }: WhereToFormInputProps) {
-	const [departTextInput, setDepartTextInput] = useState<string>('');
+	const [textInput, setTextInput] = useState<string>('');
 	const [isFocused, setIsFocused] = useState(false);
+	const [pill, setPill] = useState<string | undefined>(undefined);
 
 	const { data, isValidating } = useGraphQL<
 		FindCityQuery,
@@ -37,16 +38,16 @@ function WhereToFormInput({
 	>(
 		`findCity`,
 		() => {
-			return (departTextInput?.length ?? -1) >= 3 ? findCityQuery : undefined;
+			return (textInput?.length ?? -1) >= 3 ? findCityQuery : undefined;
 		},
 		{
-			search: departTextInput,
+			search: textInput,
 		}
 	);
 
 	const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
 		const value = e.currentTarget.value;
-		setDepartTextInput(value);
+		setTextInput(value);
 	};
 
 	const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
@@ -67,20 +68,39 @@ function WhereToFormInput({
 		destination: FindCityQuery['destinations'][0]
 	) => {
 		onSelectDestination(destination.id);
+		setPill(destination.name);
 		setIsFocused(false);
 	};
 
-	const canShowResults = (departTextInput?.length ?? -1) >= 3 && isFocused;
+	const handleClearInput = () => {
+		onSelectDestination(undefined);
+		setTextInput('');
+		setPill(undefined);
+	};
+
+	const canShowResults = (textInput?.length ?? -1) >= 3 && isFocused;
 
 	return (
 		<div className={styles.container} onBlur={handleBlur}>
-			<input
-				className={styles.input}
-				placeholder={placeholder}
-				value={departTextInput}
-				onChange={handleInputChange}
-				onFocus={handleFocus}
-			/>
+			<div className={styles.pseudoInput}>
+				{pill && (
+					<div className={styles.pillContainer}>
+						<div className={styles.pill}>{pill}</div>
+						<button className={styles.pillClear} onClick={handleClearInput}>
+							Clear
+						</button>
+					</div>
+				)}
+				{!pill && (
+					<input
+						className={styles.input}
+						placeholder={placeholder}
+						value={textInput}
+						onChange={handleInputChange}
+						onFocus={handleFocus}
+					/>
+				)}
+			</div>
 
 			<div className={styles.popoverContainer}>
 				{isValidating && <div className={styles.loadingBar} />}

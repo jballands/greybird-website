@@ -4,9 +4,17 @@
 	margin: 5px 0;
 }
 
-.input {
-	outline: none;
+/* ------------------------------------------------------ */
+
+.pseudoInput {
+	box-sizing: border-box;
 	border: 1px solid #333;
+}
+
+.input {
+	box-sizing: border-box;
+	outline: none;
+	border: 1px solid transparent;
 	background: transparent;
 	padding: 10px 15px;
 	font-size: 26px;
@@ -14,9 +22,41 @@
 	color: white;
 }
 
+.input:focus {
+	border: 1px solid var(--gb-yellow);
+}
+
 .popoverContainer {
 	position: relative;
 }
+
+/* ------------------------------------------------------ */
+
+.pillContainer {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+}
+
+.pill {
+	padding: 10px 15px;
+	font-size: 26px;
+}
+
+.pillClear {
+	padding: 15px;
+	font-size: 14px;
+	text-transform: uppercase;
+	background-color: transparent;
+	border: none;
+	color: var(--gb-orange);
+}
+
+.pillClear:hover {
+	cursor: pointer;
+}
+
+/* ------------------------------------------------------ */
 
 @keyframes loading-bar-animation {
 	0% {

@@ -5,6 +5,8 @@
  * build my own!
  */
 
+import { useCallback } from 'react';
+
 interface GraphQLRequest<V> {
 	operationName: string;
 	query: string;
@@ -18,23 +20,24 @@ function useGraphQL<QueryResponse, Variables>(
 	query: (() => string | undefined | never) | string,
 	variables?: Variables
 ) {
-	const { data, error, isValidating } = useSWR<QueryResponse>(
-		() => {
-			if (typeof query === 'string') {
-				return [query, variables];
-			}
+	const key = useCallback(() => {
+		// If the query is just a query, use it
+		if (typeof query === 'string') {
+			return [query, variables];
+		}
 
-			const result = query();
+		// Otherwise fetch it and see if we can return a key now
+		const result = query();
 
-			if (result) {
-				return [result, variables];
-			}
+		if (result) {
+			return [result, variables];
+		}
 
-			return null;
-		},
-		async q => {
-			console.dir(q);
+		return null;
+	}, [query, variables]);
 
+	const fetcher = useCallback(
+		async (q: string) => {
 			const requestBody: GraphQLRequest<Variables> = {
 				operationName,
 				query: q,
@@ -52,8 +55,11 @@ function useGraphQL<QueryResponse, Variables>(
 			const { data } = await res.json();
 
 			return data;
-		}
+		},
+		[operationName, variables]
 	);
+
+	const { data, error, isValidating } = useSWR<QueryResponse>(key, fetcher);
 
 	return { data, error, isValidating };
 }
