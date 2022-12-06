@@ -10,11 +10,11 @@ import WhereToFormInput from './WhereToFormInput';
 function WhereToForm() {
 	const { setDeparting, setArriving } = useHomepage();
 
-	const handleSelectDepart = (id: string) => {
+	const handleSelectDepart = (id?: string) => {
 		setDeparting(id);
 	};
 
-	const handleSelectArrive = (id: string) => {
+	const handleSelectArrive = (id?: string) => {
 		setArriving(id);
 	};
 
@@ -29,7 +29,7 @@ function WhereToForm() {
 			<WhereToFormInput
 				id="arrive"
 				placeholder="Arrive"
-				onSelectDestination={handleSelectDepart}
+				onSelectDestination={handleSelectArrive}
 			/>
 		</div>
 	);

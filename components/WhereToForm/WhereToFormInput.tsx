@@ -20,7 +20,7 @@ const findCityQuery = /* GraphQL */ `
 interface WhereToFormInputProps {
 	id: string;
 	placeholder: string;
-	onSelectDestination: (id: string | undefined) => unknown;
+	onSelectDestination: (id?: string) => unknown;
 }
 
 function WhereToFormInput({

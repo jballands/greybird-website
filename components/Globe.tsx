@@ -1,16 +1,23 @@
 import type { GlobeMethods, GlobeProps } from 'react-globe.gl';
 import type {
-	FetchInitialRoutesQuery,
-	FetchInitialRoutesQueryVariables,
+	FetchGlobalCoordinatesQuery,
+	FetchGlobalCoordinatesQueryVariables,
 	Coordinate,
 } from '../graphql/gen/graphql';
 
 import dynamic from 'next/dynamic';
-import React, { Suspense, useEffect, useState, useRef } from 'react';
+import React, {
+	Suspense,
+	useEffect,
+	useState,
+	useRef,
+	useContext,
+} from 'react';
 import ReactGlobeGL from 'react-globe.gl';
 import { useResizeDetector } from 'react-resize-detector';
 import useGraphQL from './useGraphQL';
 import styles from './Globe.module.css';
+import { useHomepage } from './HomepageContext';
 
 // const ReactGlobeGL = dynamic(() => import('react-globe.gl'));
 
@@ -43,7 +50,7 @@ const makeArc = (
 	dashGap,
 });
 
-const getInitialArcs = (initialRoutes: FetchInitialRoutesQuery) => {
+const getInitialArcs = (initialRoutes: FetchGlobalCoordinatesQuery) => {
 	return initialRoutes.routes.map(route => {
 		return makeArc(
 			route.depart.coordinate,
@@ -56,8 +63,8 @@ const getInitialArcs = (initialRoutes: FetchInitialRoutesQuery) => {
 	});
 };
 
-const initialQuery = /* GraphQL */ `
-	query fetchInitialRoutes($depart: ID!, $arrive: ID) {
+const globalCoordinatesQuery = /* GraphQL */ `
+	query fetchGlobalCoordinates($depart: ID!, $arrive: ID) {
 		routes(depart: $depart, arrive: $arrive) {
 			depart {
 				coordinate {
@@ -80,11 +87,14 @@ function Globe() {
 
 	const [arcs, setArcs] = useState<Arc[]>();
 
-	const { data: initialRoutes, error } = useGraphQL<
-		FetchInitialRoutesQuery,
-		FetchInitialRoutesQueryVariables
-	>('fetchInitialRoutes', initialQuery, {
-		depart: 'aus',
+	const { connection } = useHomepage();
+
+	const { data, error } = useGraphQL<
+		FetchGlobalCoordinatesQuery,
+		FetchGlobalCoordinatesQueryVariables
+	>(`fetchGlobalCoordinates`, globalCoordinatesQuery, {
+		depart: connection?.[0] ? connection[0] : 'aus',
+		arrive: connection?.[1],
 	});
 
 	useEffect(() => {
@@ -93,36 +103,48 @@ function Globe() {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (initialRoutes) {
-			setArcs(getInitialArcs(initialRoutes));
-		}
-	}, [initialRoutes]);
-
 	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
 
-	// useEffect(() => {
-	// 	if (!connection) {
-	// 		return;
-	// 	}
+	useEffect(() => {
+		if (data && connection && data.routes.length > 0) {
+			const depart = data.routes[0].depart;
+			const arrive = data.routes[0].arrive;
 
-	// 	const [depart, arrive] = connection;
-	// 	setArcs([
-	// 		makeArc(depart.coordinate, arrive.coordinate, ['#FFC300', '#C70039'], 1),
-	// 	]);
+			setArcs([
+				makeArc(
+					depart.coordinate,
+					arrive.coordinate,
+					['#FFC300', '#C70039'],
+					1
+				),
+			]);
 
-	// 	// Set the point of view
-	// 	if (globeRef.current) {
-	// 		globeRef.current?.pointOfView(
-	// 			{
-	// 				altitude: 0.5,
-	// 				lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
-	// 				lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
-	// 			},
-	// 			500
-	// 		);
-	// 	}
-	// }, [connection]);
+			// Set the point of view
+			if (globeRef.current) {
+				globeRef.current?.pointOfView(
+					{
+						altitude: 0.5,
+						lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
+						lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
+					},
+					750
+				);
+			}
+		} else if (data) {
+			setArcs(getInitialArcs(data));
+
+			if (globeRef.current) {
+				globeRef.current?.pointOfView(
+					{
+						altitude: 1,
+						lat: 22.51,
+						lng: -81.43,
+					},
+					1000
+				);
+			}
+		}
+	}, [connection, data]);
 
 	return (
 		<div className={styles.container} ref={resizeDetectorRef}>

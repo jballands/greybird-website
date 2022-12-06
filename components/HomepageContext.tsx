@@ -1,12 +1,10 @@
-import type { City } from '../gql/graphql';
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type Connection = readonly [departing: City, arriving: City];
+type Connection = readonly [departing?: string, arriving?: string];
 
 export const createConnection = (
-	departs?: City,
-	arrives?: City
+	departs?: string,
+	arrives?: string
 ): Connection | undefined => {
 	if (!departs || !arrives) {
 		return undefined;
@@ -18,8 +16,8 @@ export const createConnection = (
 // ------------------------------------------------------------------------------
 
 interface HomepageContext {
-	setDeparting: (city: City) => unknown;
-	setArriving: (city: City) => unknown;
+	setDeparting: (id?: string) => unknown;
+	setArriving: (id?: string) => unknown;
 	connection?: Connection;
 }
 
@@ -30,14 +28,18 @@ interface HomepageContextProps {
 }
 
 export function HomepageContext({ children }: HomepageContextProps) {
-	const [departing, setDeparting] = useState<City>();
-	const [arriving, setArriving] = useState<City>();
+	const [departing, setDeparting] = useState<string>();
+	const [arriving, setArriving] = useState<string>();
 
 	const value = {
 		setDeparting,
 		setArriving,
 		connection: createConnection(departing, arriving),
 	};
+
+	console.dir(departing);
+	console.dir(arriving);
+	console.dir(value);
 
 	return (
 		<homepageContext.Provider value={value}>
