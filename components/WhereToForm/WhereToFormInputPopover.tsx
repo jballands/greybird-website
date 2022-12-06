@@ -15,7 +15,7 @@ function WhereToFormInputPopover({
 	onDestinationClick,
 }: WhereToFormInputPopoverProps) {
 	if (!results) {
-		return <div>No results</div>;
+		return null;
 	}
 
 	const handleClick = (destination: FindCityQueryDestinations[0]) => {

@@ -3,3 +3,21 @@
 	width: 100%;
 	height: 100vh;
 }
+
+@keyframes loading-globe-animation {
+	0% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.loading {
+	animation: loading-globe-animation 1.5s linear infinite;
+}

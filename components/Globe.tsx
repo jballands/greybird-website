@@ -15,6 +15,7 @@ import React, {
 } from 'react';
 import ReactGlobeGL from 'react-globe.gl';
 import { useResizeDetector } from 'react-resize-detector';
+import cx from 'classnames';
 import useGraphQL from './useGraphQL';
 import styles from './Globe.module.css';
 import { useHomepage } from './HomepageContext';
@@ -89,7 +90,7 @@ function Globe() {
 
 	const { connection } = useHomepage();
 
-	const { data, error } = useGraphQL<
+	const { data, isValidating } = useGraphQL<
 		FetchGlobalCoordinatesQuery,
 		FetchGlobalCoordinatesQueryVariables
 	>(`fetchGlobalCoordinates`, globalCoordinatesQuery, {
@@ -146,8 +147,12 @@ function Globe() {
 		}
 	}, [connection, data]);
 
+	const containerClassName = cx(styles.container, {
+		[styles.loading]: isValidating && !data,
+	});
+
 	return (
-		<div className={styles.container} ref={resizeDetectorRef}>
+		<div className={containerClassName} ref={resizeDetectorRef}>
 			<Suspense>
 				<ReactGlobeGL
 					ref={globeRef}
