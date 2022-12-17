@@ -1,9 +1,6 @@
 import type { GlobeMethods, GlobeProps } from 'react-globe.gl';
-import type {
-	FetchGlobalCoordinatesQuery,
-	FetchGlobalCoordinatesQueryVariables,
-	Coordinate,
-} from '../graphql/gen/graphql';
+import type { Coordinate } from '../graphql/gen/graphql';
+import type { HomepageContext } from './HomepageContext';
 
 import dynamic from 'next/dynamic';
 import React, {
@@ -15,7 +12,6 @@ import React, {
 } from 'react';
 import ReactGlobeGL from 'react-globe.gl';
 import { useResizeDetector } from 'react-resize-detector';
-import cx from 'classnames';
 import useGraphQL from './useGraphQL';
 import styles from './Globe.module.css';
 import { useHomepage } from './HomepageContext';
@@ -51,8 +47,8 @@ const makeArc = (
 	dashGap,
 });
 
-const getInitialArcs = (initialRoutes: FetchGlobalCoordinatesQuery) => {
-	return initialRoutes.routes.map(route => {
+const getInitialArcs = (initialRoutes: HomepageContext['routes']) => {
+	return initialRoutes.map(route => {
 		return makeArc(
 			route.depart.coordinate,
 			route.arrive.coordinate,
@@ -64,39 +60,13 @@ const getInitialArcs = (initialRoutes: FetchGlobalCoordinatesQuery) => {
 	});
 };
 
-const globalCoordinatesQuery = /* GraphQL */ `
-	query fetchGlobalCoordinates($depart: ID!, $arrive: ID) {
-		routes(depart: $depart, arrive: $arrive) {
-			depart {
-				coordinate {
-					lat
-					lng
-				}
-			}
-			arrive {
-				coordinate {
-					lat
-					lng
-				}
-			}
-		}
-	}
-`;
-
 function Globe() {
 	const globeRef = useRef<GlobeMethods>();
 
 	const [arcs, setArcs] = useState<Arc[]>();
 
-	const { connection } = useHomepage();
-
-	const { data, isValidating } = useGraphQL<
-		FetchGlobalCoordinatesQuery,
-		FetchGlobalCoordinatesQueryVariables
-	>(`fetchGlobalCoordinates`, globalCoordinatesQuery, {
-		depart: connection?.[0] ? connection[0] : 'aus',
-		arrive: connection?.[1],
-	});
+	const { departingAirport, arrivingAirport, routes, isValidatingRoutes } =
+		useHomepage();
 
 	useEffect(() => {
 		if (globeRef.current) {
@@ -107,52 +77,52 @@ function Globe() {
 	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
 
 	useEffect(() => {
-		if (data && connection && data.routes.length > 0) {
-			const depart = data.routes[0].depart;
-			const arrive = data.routes[0].arrive;
+		if (routes.length > 0) {
+			if (departingAirport && arrivingAirport) {
+				const route = routes[0];
 
-			setArcs([
-				makeArc(
-					depart.coordinate,
-					arrive.coordinate,
-					['#FFC300', '#C70039'],
-					1
-				),
-			]);
+				const depart = route.depart;
+				const arrive = route.arrive;
 
-			// Set the point of view
-			if (globeRef.current) {
-				globeRef.current?.pointOfView(
-					{
-						altitude: 0.5,
-						lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
-						lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
-					},
-					750
-				);
-			}
-		} else if (data) {
-			setArcs(getInitialArcs(data));
+				setArcs([
+					makeArc(
+						depart.coordinate,
+						arrive.coordinate,
+						['#FFC300', '#C70039'],
+						1
+					),
+				]);
 
-			if (globeRef.current) {
-				globeRef.current?.pointOfView(
-					{
-						altitude: 1,
-						lat: 22.51,
-						lng: -81.43,
-					},
-					1000
-				);
+				// Set the point of view
+				if (globeRef.current) {
+					globeRef.current?.pointOfView(
+						{
+							altitude: 0.5,
+							lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
+							lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
+						},
+						750
+					);
+				}
+			} else {
+				setArcs(getInitialArcs(routes));
+
+				if (globeRef.current) {
+					globeRef.current?.pointOfView(
+						{
+							altitude: 1,
+							lat: 22.51,
+							lng: -81.43,
+						},
+						1000
+					);
+				}
 			}
 		}
-	}, [connection, data]);
-
-	const containerClassName = cx(styles.container, {
-		[styles.loading]: isValidating && !data,
-	});
+	}, [arrivingAirport, routes]);
 
 	return (
-		<div className={containerClassName} ref={resizeDetectorRef}>
+		<div className={styles.container} ref={resizeDetectorRef}>
 			<Suspense>
 				<ReactGlobeGL
 					ref={globeRef}

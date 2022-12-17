@@ -8,14 +8,14 @@ import styles from './WhereToForm.module.css';
 import WhereToFormInput from './WhereToFormInput';
 
 function WhereToForm() {
-	const { setDeparting, setArriving } = useHomepage();
+	const { setDepartingAirport, setArrivingAirport } = useHomepage();
 
-	const handleSelectDepart = (id?: string) => {
-		setDeparting(id);
+	const handleSelectDepart = (airportId?: string) => {
+		setDepartingAirport(airportId);
 	};
 
-	const handleSelectArrive = (id?: string) => {
-		setArriving(id);
+	const handleSelectArrive = (airportId?: string) => {
+		setArrivingAirport(airportId);
 	};
 
 	return (

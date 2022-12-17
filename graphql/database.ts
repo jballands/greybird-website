@@ -194,20 +194,20 @@ export const routes: RouteModel[] = [
 		elevated: true,
 	},
 	// san
-	{ id: '17', flightNumber: 17, depart: 'aus', arrive: 'bur', elevated: false },
-	{ id: '18', flightNumber: 18, depart: 'bur', arrive: 'aus', elevated: false },
+	{ id: '17', flightNumber: 17, depart: 'aus', arrive: 'san', elevated: false },
+	{ id: '18', flightNumber: 18, depart: 'san', arrive: 'aus', elevated: false },
 	{
 		id: '1016',
 		flightNumber: 1016,
 		depart: 'aus',
-		arrive: 'bur',
+		arrive: 'san',
 		elevated: true,
 	},
 	{
 		id: '1017',
 		flightNumber: 1017,
 		depart: 'bur',
-		arrive: 'aus',
+		arrive: 'san',
 		elevated: true,
 	},
 	// den

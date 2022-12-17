@@ -1,55 +1,101 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import type {
+	FetchRoutesQuery,
+	FetchRoutesQueryVariables,
+} from '../graphql/gen/graphql';
 
-type Connection = readonly [departing?: string, arriving?: string];
+import React, {
+	createContext,
+	useContext,
+	useCallback,
+	useState,
+	ReactNode,
+} from 'react';
+import useGraphQL from './useGraphQL';
 
-export const createConnection = (
-	departs?: string,
-	arrives?: string
-): Connection | undefined => {
-	if (!departs || !arrives) {
-		return undefined;
+type FetchRoutesQueryRoutes = FetchRoutesQuery['routes'];
+
+const routesQuery = /* GraphQL */ `
+	query fetchRoutes($depart: ID!, $arrive: ID) {
+		routes(depart: $depart, arrive: $arrive) {
+			flightNumber
+			elevated
+			depart {
+				name
+				coordinate {
+					lat
+					lng
+				}
+			}
+			arrive {
+				name
+				coordinate {
+					lat
+					lng
+				}
+			}
+		}
 	}
-
-	return [departs, arrives] as const;
-};
+`;
 
 // ------------------------------------------------------------------------------
 
-interface HomepageContext {
-	setDeparting: (id?: string) => unknown;
-	setArriving: (id?: string) => unknown;
-	connection?: Connection;
+export interface HomepageContext {
+	departingAirport?: string;
+	arrivingAirport?: string;
+	setDepartingAirport: (airportId?: string) => unknown;
+	setArrivingAirport: (airportId?: string) => unknown;
+	routes: FetchRoutesQueryRoutes;
+	isValidatingRoutes: boolean;
 }
 
-const homepageContext = createContext<HomepageContext | null>(null);
+const _HomepageContext = createContext<HomepageContext | null>(null);
 
 interface HomepageContextProps {
 	children: ReactNode;
 }
 
 export function HomepageContext({ children }: HomepageContextProps) {
-	const [departing, setDeparting] = useState<string>();
-	const [arriving, setArriving] = useState<string>();
+	const [departingAirport, setDepartingAirport] = useState<
+		string | undefined
+	>();
+	const [arrivingAirport, setArrivingAirport] = useState<string | undefined>();
 
-	const value = {
-		setDeparting,
-		setArriving,
-		connection: createConnection(departing, arriving),
+	const getQueryParameters = (): FetchRoutesQueryVariables => {
+		if (!departingAirport || !arrivingAirport) {
+			return {
+				depart: 'aus',
+				arrive: undefined,
+			};
+		}
+		return {
+			depart: departingAirport,
+			arrive: arrivingAirport,
+		};
 	};
 
-	console.dir(departing);
-	console.dir(arriving);
-	console.dir(value);
+	const { data, isValidating } = useGraphQL<
+		FetchRoutesQuery,
+		FetchRoutesQueryVariables
+	>('fetchRoutes', routesQuery, getQueryParameters());
+
+	const value: HomepageContext = {
+		departingAirport,
+		arrivingAirport,
+		setDepartingAirport,
+		setArrivingAirport,
+		routes: data?.routes ?? [],
+		isValidatingRoutes: isValidating,
+	};
 
 	return (
-		<homepageContext.Provider value={value}>
+		<_HomepageContext.Provider value={value}>
 			{children}
-		</homepageContext.Provider>
+		</_HomepageContext.Provider>
 	);
 }
 
 export function useHomepage() {
-	const context = useContext(homepageContext);
+	const context = useContext(_HomepageContext);
 
 	if (!context) {
 		throw new Error(

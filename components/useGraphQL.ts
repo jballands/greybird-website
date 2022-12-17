@@ -6,14 +6,13 @@
  */
 
 import { useCallback } from 'react';
+import useSWR from 'swr';
 
 interface GraphQLRequest<V> {
 	operationName: string;
 	query: string;
 	variables?: V;
 }
-
-import useSWR from 'swr';
 
 function useGraphQL<QueryResponse, Variables>(
 	operationName: string,
