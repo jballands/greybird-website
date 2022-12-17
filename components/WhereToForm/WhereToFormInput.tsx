@@ -9,8 +9,8 @@ import WhereToFormInputPopover from './WhereToFormInputPopover';
 import styles from './WhereToFormInput.module.css';
 
 const findCityQuery = /* GraphQL */ `
-	query findCity($search: String) {
-		destinations(id: $search, name: $search) {
+	query findCity($search: String | ID) {
+		destinations(filter: { id: $search, name: $search }) {
 			id
 			name
 		}

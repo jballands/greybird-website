@@ -206,8 +206,8 @@ export const routes: RouteModel[] = [
 	{
 		id: '1017',
 		flightNumber: 1017,
-		depart: 'bur',
-		arrive: 'san',
+		depart: 'san',
+		arrive: 'aus',
 		elevated: true,
 	},
 	// den

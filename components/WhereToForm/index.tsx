@@ -7,6 +7,21 @@ import useGraphQL from '../useGraphQL';
 import styles from './WhereToForm.module.css';
 import WhereToFormInput from './WhereToFormInput';
 
+// const findCityQuery = /* GraphQL */ `
+// 	query findCity($search: String) {
+// 		destinations(filter: { id: $search, name: $search }) {
+// 			id
+// 			name
+// 		}
+// 	}
+// `;
+
+// const findCityWithConstraintsQuery = /* GraphQL */ `
+// 	query findCityWithConstraints($search: String, $depart: ID, $arrive: ID) {
+// 		routes
+// 	}
+// `;
+
 function WhereToForm() {
 	const { setDepartingAirport, setArrivingAirport } = useHomepage();
 

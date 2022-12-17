@@ -1,12 +1,19 @@
+input CityFilter {
+	id: ID
+	name: String
+}
+
+input RouteFilter {
+	flightNumber: Int
+	depart: CityFilter
+	arrive: CityFilter
+	elevated: Boolean
+}
+
 type Query {
-	destinations(id: String, name: String): [City!]!
 	coordinates(id: String): Coordinate!
-	routes(
-		flightNumber: Int
-		depart: ID
-		arrive: ID
-		elevated: Boolean
-	): [Route!]!
+	destinations(filter: CityFilter): [City!]!
+	routes(filter: RouteFilter): [Route!]!
 }
 
 type Route {

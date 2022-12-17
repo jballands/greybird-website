@@ -16,7 +16,7 @@ type FetchRoutesQueryRoutes = FetchRoutesQuery['routes'];
 
 const routesQuery = /* GraphQL */ `
 	query fetchRoutes($depart: ID!, $arrive: ID) {
-		routes(depart: $depart, arrive: $arrive) {
+		routes(filter: { depart: { id: $depart }, arrive: { id: $arrive } }) {
 			flightNumber
 			elevated
 			depart {
@@ -60,7 +60,7 @@ export function HomepageContext({ children }: HomepageContextProps) {
 	>();
 	const [arrivingAirport, setArrivingAirport] = useState<string | undefined>();
 
-	const getQueryParameters = (): FetchRoutesQueryVariables => {
+	const getQueryParameters = useCallback((): FetchRoutesQueryVariables => {
 		if (!departingAirport || !arrivingAirport) {
 			return {
 				depart: 'aus',
@@ -71,7 +71,7 @@ export function HomepageContext({ children }: HomepageContextProps) {
 			depart: departingAirport,
 			arrive: arrivingAirport,
 		};
-	};
+	}, [arrivingAirport, departingAirport]);
 
 	const { data, isValidating } = useGraphQL<
 		FetchRoutesQuery,
