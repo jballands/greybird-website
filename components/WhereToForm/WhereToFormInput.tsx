@@ -1,49 +1,68 @@
 import type {
-	FindCityQuery,
-	FindCityQueryVariables,
+	FindCityWithConstraintsQuery,
+	FindCityWithConstraintsQueryVariables,
 } from '../../graphql/gen/graphql';
 
-import React, { useState, FormEvent, FocusEvent } from 'react';
+import React, { useEffect, useState, FormEvent, FocusEvent } from 'react';
 import useGraphQL from '../useGraphQL';
 import WhereToFormInputPopover from './WhereToFormInputPopover';
 import styles from './WhereToFormInput.module.css';
 
-const findCityQuery = /* GraphQL */ `
-	query findCity($search: String | ID) {
-		destinations(filter: { id: $search, name: $search }) {
-			id
-			name
-		}
-	}
-`;
+type FindCityWithConstraintsQueryResponseType<Q, V> = ReturnType<
+	typeof useGraphQL<Q, V>
+>;
 
 interface WhereToFormInputProps {
 	id: string;
 	placeholder: string;
+	fetchAirports: (
+		search: string
+	) => Promise<
+		FindCityWithConstraintsQueryResponseType<
+			FindCityWithConstraintsQuery,
+			FindCityWithConstraintsQueryVariables
+		>
+	>;
 	onSelectDestination: (airportId?: string) => unknown;
 }
 
-function WhereToFormInput({
+function WhereToFormInputProps({
 	id,
 	placeholder,
+	fetchAirports,
 	onSelectDestination,
 }: WhereToFormInputProps) {
 	const [textInput, setTextInput] = useState<string>('');
 	const [isFocused, setIsFocused] = useState(false);
 	const [pill, setPill] = useState<string | undefined>(undefined);
+	const [searchResults, setSearchResults] =
+		useState<FindCityWithConstraintsQuery['routes']>();
+	const [isValidating, setValidating] = useState(false);
 
-	const { data, isValidating } = useGraphQL<
-		FindCityQuery,
-		FindCityQueryVariables
-	>(
-		`findCity`,
-		() => {
-			return (textInput?.length ?? -1) >= 3 ? findCityQuery : undefined;
-		},
-		{
-			search: textInput,
+	// const { data, isValidating } = useGraphQL<
+	// 	FindCityQuery,
+	// 	FindCityQueryVariables
+	// >(
+	// 	`findCity`,
+	// 	() => {
+	// 		return (textInput?.length ?? -1) >= 3 ? findCityQuery : undefined;
+	// 	},
+	// 	{
+	// 		search: textInput,
+	// 	}
+	// );
+
+	useEffect(() => {
+		const doFetch = async () => {
+			const { data, isValidating } = await fetchAirports(textInput);
+			setFetchData(data);
+			setValidating(isValidating);
+		};
+
+		if ((textInput?.length ?? -1) >= 3 && isFocused) {
+			doFetch();
 		}
-	);
+	}, [textInput, isFocused, fetchAirports]);
 
 	const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
 		const value = e.currentTarget.value;

@@ -1,5 +1,6 @@
 export interface CityModel {
 	id: string;
+	code: string;
 	name: string;
 }
 
@@ -19,41 +20,181 @@ export interface CoordinateModel {
 }
 
 export const destinations: CityModel[] = [
-	{ id: 'aus', name: 'Austin' }, //
-	{ id: 'abq', name: 'Albuquerque' }, // 1
-	{ id: 'atl', name: 'Atlanta' }, //
-	{ id: 'bna', name: 'Nashville' }, // 1
-	{ id: 'bos', name: 'Boston' }, //
-	{ id: 'bur', name: 'Burbank/Los Angeles' }, //
-	{ id: 'bze', name: 'Belize City' }, // 3
-	{ id: 'bzn', name: 'Bozeman/Yellowstone' }, // 4
-	{ id: 'cun', name: 'Cancun' }, // 2
-	{ id: 'den', name: 'Denver' }, //
-	{ id: 'e38', name: 'Alpine' }, // 1
-	{ id: 'gua', name: 'Guatemala City' }, // 1
-	{ id: 'jac', name: 'Jackson Hole' }, // 3
-	{ id: 'jfk', name: 'New York' }, //
-	{ id: 'las', name: 'Las Vegas' }, // 2
-	{ id: 'mco', name: 'Orlando' }, // 1
-	{ id: 'mia', name: 'Miami' }, //
-	{ id: 'mex', name: 'Mexico City' }, // 1
-	{ id: 'msy', name: 'New Orleans' }, // 2
-	{ id: 'ord', name: 'Chicago' }, //
-	{ id: 'pdx', name: 'Portland' }, //
-	{ id: 'phl', name: 'Philadelphia' }, // 1
-	{ id: 'pvr', name: 'Puerto Vallarta' }, // 3
-	{ id: 'rdu', name: 'Raleigh-Durham' }, // 1
-	{ id: 'ric', name: 'Richmond' }, // 1
-	{ id: 'san', name: 'San Diego' }, //
-	{ id: 'sea', name: 'Seattle-Tacoma' }, //
-	{ id: 'sjc', name: 'San Jose' }, //
-	{ id: 'sjd', name: 'Los Cabos' }, // 2
-	{ id: 'sjo', name: 'San José' }, // 1
-	{ id: 'slc', name: 'Salt Lake City' }, // 3
-	{ id: 'smf', name: 'Sacramento' }, // 3
-	{ id: 'yul', name: 'Montréal' }, // 1
-	{ id: 'yvr', name: 'Vancouver' }, // 1
-	{ id: 'yyz', name: 'Toronto' }, // 1
+	{
+		id: 'aus',
+		code: 'aus',
+		name: 'Austin',
+	},
+	{
+		id: 'abq',
+		code: 'abq',
+		name: 'Albuquerque',
+	},
+	{
+		id: 'atl',
+		code: 'atl',
+		name: 'Atlanta',
+	},
+	{
+		id: 'bna',
+		code: 'bna',
+		name: 'Nashville',
+	},
+	{
+		id: 'bos',
+		code: 'bos',
+		name: 'Boston',
+	},
+	{
+		id: 'bur',
+		code: 'bur',
+		name: 'Burbank/Los Angeles',
+	},
+	{
+		id: 'bze',
+		code: 'bze',
+		name: 'Belize City',
+	},
+	{
+		id: 'bzn',
+		code: 'bzn',
+		name: 'Bozeman/Yellowstone',
+	},
+	{
+		id: 'cun',
+		code: 'cun',
+		name: 'Cancun',
+	},
+	{
+		id: 'den',
+		code: 'den',
+		name: 'Denver',
+	},
+	{
+		id: 'e38',
+		code: 'e38',
+		name: 'Alpine',
+	},
+	{
+		id: 'gua',
+		code: 'gua',
+		name: 'Guatemala City',
+	},
+	{
+		id: 'jac',
+		code: 'jac',
+		name: 'Jackson Hole',
+	},
+	{
+		id: 'jfk',
+		code: 'jfk',
+		name: 'New York',
+	},
+	{
+		id: 'las',
+		code: 'las',
+		name: 'Las Vegas',
+	},
+	{
+		id: 'mco',
+		code: 'mco',
+		name: 'Orlando',
+	},
+	{
+		id: 'mia',
+		code: 'mia',
+		name: 'Miami',
+	},
+	{
+		id: 'mex',
+		code: 'mex',
+		name: 'Mexico City',
+	},
+	{
+		id: 'msy',
+		code: 'msy',
+		name: 'New Orleans',
+	},
+	{
+		id: 'ord',
+		code: 'ord',
+		name: 'Chicago',
+	},
+	{
+		id: 'pdx',
+		code: 'pdx',
+		name: 'Portland',
+	},
+	{
+		id: 'phl',
+		code: 'phl',
+		name: 'Philadelphia',
+	},
+	{
+		id: 'pvr',
+		code: 'pvr',
+		name: 'Puerto Vallarta',
+	},
+	{
+		id: 'rdu',
+		code: 'rdu',
+		name: 'Raleigh-Durham',
+	},
+	{
+		id: 'ric',
+		code: 'ric',
+		name: 'Richmond',
+	},
+	{
+		id: 'san',
+		code: 'san',
+		name: 'San Diego',
+	},
+	{
+		id: 'sea',
+		code: 'sea',
+		name: 'Seattle-Tacoma',
+	},
+	{
+		id: 'sjc',
+		code: 'sjc',
+		name: 'San Jose',
+	},
+	{
+		id: 'sjd',
+		code: 'sjd',
+		name: 'Los Cabos',
+	},
+	{
+		id: 'sjo',
+		code: 'sjo',
+		name: 'San José',
+	},
+	{
+		id: 'slc',
+		code: 'slc',
+		name: 'Salt Lake City',
+	},
+	{
+		id: 'smf',
+		code: 'smf',
+		name: 'Sacramento',
+	},
+	{
+		id: 'yul',
+		code: 'yul',
+		name: 'Montréal',
+	},
+	{
+		id: 'yvr',
+		code: 'yvr',
+		name: 'Vancouver',
+	},
+	{
+		id: 'yyz',
+		code: 'yyz',
+		name: 'Toronto',
+	},
 ];
 
 export const routes: RouteModel[] = [

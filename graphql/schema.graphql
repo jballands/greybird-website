@@ -1,5 +1,6 @@
 input CityFilter {
 	id: ID
+	code: String
 	name: String
 }
 
@@ -26,6 +27,7 @@ type Route {
 
 type City {
 	id: ID!
+	code: String!
 	name: String!
 	coordinate: Coordinate!
 }

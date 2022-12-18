@@ -1,5 +1,3 @@
-import type { FindCityQuery } from '../../graphql/gen/graphql';
-
 import React, { useState, FormEvent } from 'react';
 import useSWR from 'swr';
 import { useHomepage } from '../HomepageContext';
@@ -7,20 +5,25 @@ import useGraphQL from '../useGraphQL';
 import styles from './WhereToForm.module.css';
 import WhereToFormInput from './WhereToFormInput';
 
-// const findCityQuery = /* GraphQL */ `
-// 	query findCity($search: String) {
-// 		destinations(filter: { id: $search, name: $search }) {
-// 			id
-// 			name
-// 		}
-// 	}
-// `;
-
-// const findCityWithConstraintsQuery = /* GraphQL */ `
-// 	query findCityWithConstraints($search: String, $depart: ID, $arrive: ID) {
-// 		routes
-// 	}
-// `;
+const findCityWithConstraintsQuery = /* GraphQL */ `
+	query findCityWithConstraints($departSearch: String, $arriveSearch: String) {
+		routes(
+			filter: {
+				depart: { code: $departSearch, name: $departSearch }
+				arrive: { code: $arriveSearch, name: $arriveSearch }
+			}
+		) {
+			depart {
+				id
+				name
+			}
+			arrive {
+				id
+				name
+			}
+		}
+	}
+`;
 
 function WhereToForm() {
 	const { setDepartingAirport, setArrivingAirport } = useHomepage();

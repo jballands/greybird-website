@@ -119,7 +119,7 @@ function Globe() {
 				}
 			}
 		}
-	}, [arrivingAirport, routes]);
+	}, [arrivingAirport, departingAirport, routes]);
 
 	return (
 		<div className={styles.container} ref={resizeDetectorRef}>
