@@ -25,7 +25,7 @@ function useGraphQL<QueryResponse, Variables>(
 			return [query, variables];
 		}
 
-		// Otherwise fetch it and see if we can return a key now
+		// Otherwise get it and see if we can return a key now
 		const result = query();
 
 		if (result) {

@@ -1,32 +1,17 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useCallback, useState, FormEvent } from 'react';
 import useSWR from 'swr';
 import { useHomepage } from '../HomepageContext';
 import useGraphQL from '../useGraphQL';
 import styles from './WhereToForm.module.css';
 import WhereToFormInput from './WhereToFormInput';
 
-const findCityWithConstraintsQuery = /* GraphQL */ `
-	query findCityWithConstraints($departSearch: String, $arriveSearch: String) {
-		routes(
-			filter: {
-				depart: { code: $departSearch, name: $departSearch }
-				arrive: { code: $arriveSearch, name: $arriveSearch }
-			}
-		) {
-			depart {
-				id
-				name
-			}
-			arrive {
-				id
-				name
-			}
-		}
-	}
-`;
-
 function WhereToForm() {
-	const { setDepartingAirport, setArrivingAirport } = useHomepage();
+	const {
+		departingAirport,
+		setDepartingAirport,
+		arrivingAirport,
+		setArrivingAirport,
+	} = useHomepage();
 
 	const handleSelectDepart = (airportId?: string) => {
 		setDepartingAirport(airportId);
@@ -41,11 +26,15 @@ function WhereToForm() {
 			<h1>Where are we going?</h1>
 			<WhereToFormInput
 				id="depart"
+				constraintId="arrive"
+				constraint={arrivingAirport}
 				placeholder="Depart"
 				onSelectDestination={handleSelectDepart}
 			/>
 			<WhereToFormInput
 				id="arrive"
+				constraintId="depart"
+				constraint={departingAirport}
 				placeholder="Arrive"
 				onSelectDestination={handleSelectArrive}
 			/>

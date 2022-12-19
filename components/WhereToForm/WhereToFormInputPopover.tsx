@@ -1,39 +1,46 @@
-import type { FindCityQuery } from '../../graphql/gen/graphql';
+import type { FindCityWithConstraintsQuery } from '../../graphql/gen/graphql';
 
 import React from 'react';
 import styles from './WhereToFormInputPopover.module.css';
 
-type FindCityQueryDestinations = FindCityQuery['destinations'];
+type FindCityQueryRoutes = FindCityWithConstraintsQuery['routes'];
+type FindCityQueryDestination = FindCityQueryRoutes[0]['depart'];
 
 interface WhereToFormInputPopoverProps {
-	results?: FindCityQueryDestinations;
-	onDestinationClick: (destination: FindCityQueryDestinations[0]) => unknown;
+	id: 'depart' | 'arrive';
+	routes?: FindCityQueryRoutes;
+	onDestinationClick: (destination: FindCityQueryDestination) => unknown;
 }
 
 function WhereToFormInputPopover({
-	results,
+	id,
+	routes,
 	onDestinationClick,
 }: WhereToFormInputPopoverProps) {
-	if (!results) {
+	if (!routes) {
 		return null;
 	}
 
-	const handleClick = (destination: FindCityQueryDestinations[0]) => {
+	const handleClick = (destination: FindCityQueryDestination) => {
 		onDestinationClick(destination);
 	};
 
 	return (
 		<>
-			{results.map(destination => (
-				<button
-					className={styles.container}
-					key={destination.id}
-					onClick={() => handleClick(destination)}
-				>
-					<span className={styles.name}>{destination.name}</span>
-					<span className={styles.id}>{destination.id}</span>
-				</button>
-			))}
+			{routes.map(route => {
+				const destination = route[id];
+
+				return (
+					<button
+						className={styles.container}
+						key={destination.id}
+						onClick={() => handleClick(destination)}
+					>
+						<span className={styles.name}>{destination.name}</span>
+						<span className={styles.id}>{destination.id}</span>
+					</button>
+				);
+			})}
 		</>
 	);
 }
