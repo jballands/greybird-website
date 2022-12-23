@@ -18,6 +18,17 @@ function WhereToFormInputPopover({
 		return null;
 	}
 
+	if (destinations.length <= 0) {
+		return (
+			<div className={styles.container}>
+				<span className={styles.noResults}>No Results</span>
+				<span className={styles.noResultsExplaination}>
+					Try searching for a different city.
+				</span>
+			</div>
+		);
+	}
+
 	const handleClick = (
 		destination: FindCityWithConstraintsQuery['destinations'][0]
 	) => {
@@ -25,11 +36,11 @@ function WhereToFormInputPopover({
 	};
 
 	return (
-		<>
+		<div className={styles.container}>
 			{destinations.map(destination => {
 				return (
 					<button
-						className={styles.container}
+						className={styles.button}
 						key={destination.id}
 						onClick={() => handleClick(destination)}
 					>
@@ -38,7 +49,7 @@ function WhereToFormInputPopover({
 					</button>
 				);
 			})}
-		</>
+		</div>
 	);
 }
 

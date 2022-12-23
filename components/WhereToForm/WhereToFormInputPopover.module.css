@@ -1,16 +1,25 @@
 .container {
+	position: absolute;
 	width: 100%;
 	top: 0;
 	background: var(--bg-dark);
 	border: 1px solid rgb(21, 32, 54);
-	padding: 10px;
+	padding: 7px 0;
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+.button {
+	width: 100%;
 	display: flex;
 	flex-flow: column nowrap;
 	border: none;
 	color: var(--white);
+	background: var(--bg-dark);
+	padding: 10px;
 }
 
-.container:hover {
+.button:hover {
 	background: #333;
 	cursor: pointer;
 }
@@ -24,4 +33,17 @@
 .id {
 	text-transform: uppercase;
 	color: --var(--white);
+}
+
+.noResults {
+	font-size: 21px;
+	font-weight: 700;
+	padding: 5px 10px;
+}
+
+.noResultsExplaination {
+	color: var(--muted);
+	font-size: 14px;
+	font-style: italic;
+	padding: 0 10px 5px 10px;
 }
