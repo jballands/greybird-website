@@ -9,39 +9,24 @@ import WhereToFormInputPopover from './WhereToFormInputPopover';
 import styles from './WhereToFormInput.module.css';
 
 const findCityWithConstraintsQuery = /* GraphQL */ `
-	query findCityWithConstraints($departSearch: String, $arriveSearch: String) {
-		routes(
-			filter: {
-				depart: { code: $departSearch, name: $departSearch }
-				arrive: { code: $arriveSearch, name: $arriveSearch }
-			}
+	query findCityWithConstraints($search: String, $connectsWith: ID) {
+		destinations(
+			filter: { code: $search, name: $search, connectsWithId: $connectsWith }
 		) {
-			depart {
-				id
-				name
-			}
-			arrive {
-				id
-				name
-			}
+			id
+			name
+			code
 		}
 	}
 `;
 
-// We just use depart here since depart and arrive are exactly the same shape
-type Destination = FindCityWithConstraintsQuery['routes'][0]['depart'];
-
 interface WhereToFormInputProps {
-	id: 'depart' | 'arrive';
-	constraintId: 'depart' | 'arrive';
 	constraint?: string;
 	placeholder: string;
 	onSelectDestination: (airportId?: string) => unknown;
 }
 
 function WhereToFormInput({
-	id,
-	constraintId,
 	constraint,
 	placeholder,
 	onSelectDestination,
@@ -62,8 +47,8 @@ function WhereToFormInput({
 		},
 		// Dynamically fill in the variables based on the id and constraint props
 		{
-			departSearch: constraintId === 'depart' ? constraint : textInput,
-			arriveSearch: constraintId === 'arrive' ? constraint : textInput,
+			search: textInput,
+			connectsWith: constraint,
 		}
 	);
 
@@ -86,7 +71,9 @@ function WhereToFormInput({
 		});
 	};
 
-	const handleDestinationClick = (destination: Destination) => {
+	const handleDestinationClick = (
+		destination: FindCityWithConstraintsQuery['destinations'][0]
+	) => {
 		onSelectDestination(destination.id);
 		setPill(destination.name);
 		setIsFocused(false);
@@ -126,8 +113,7 @@ function WhereToFormInput({
 				{isValidating && <div className={styles.loadingBar} />}
 				{canShowResults && (
 					<WhereToFormInputPopover
-						id={id}
-						routes={data?.routes}
+						destinations={data?.destinations}
 						onDestinationClick={handleDestinationClick}
 					/>
 				)}

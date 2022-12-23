@@ -16,6 +16,7 @@ import {
 	RouteModel,
 	routes,
 } from './database';
+import { connections } from './aggregations';
 
 const typeDefs = loadSchemaSync('./graphql/schema.graphql', {
 	loaders: [new GraphQLFileLoader()],
@@ -41,20 +42,36 @@ const destinationsResolver = (
 		return destinations;
 	}
 
-	const { id, name } = filters;
+	const { id, name, code, connectsWithId } = filters;
 
+	const lowercaseCode = code?.toLowerCase() ?? '';
 	const lowercaseName = name?.toLowerCase() ?? '';
+	const lowercaseConnectsWithId = connectsWithId?.toLowerCase() ?? '';
 
 	return destinations.filter(city => {
+		// First, check for connects with. If it exists and the city doesn't connect with the ID
+		// specified, we can just skip it
+		if (
+			connectsWithId &&
+			!connections[city.id]?.includes(lowercaseConnectsWithId)
+		) {
+			return false;
+		}
+
+		// id must match exactly
 		if (id !== undefined && city.id === id) {
 			return true;
 		}
-		if (name !== undefined && city.id.toLowerCase().includes(lowercaseName)) {
+
+		// Code and name can be matched loosely
+		if (code !== undefined && city.code.toLowerCase().includes(lowercaseCode)) {
 			return true;
 		}
+
 		if (name !== undefined && city.name.toLowerCase().includes(lowercaseName)) {
 			return true;
 		}
+
 		return false;
 	});
 };
@@ -103,6 +120,7 @@ const resolvers: Resolvers = {
 	},
 	City: {
 		id: parent => parent.id,
+		code: parent => parent.code,
 		name: parent => parent.name,
 		coordinate: parent =>
 			dangerousFind(coordinates, coord => coord.id === parent.id),

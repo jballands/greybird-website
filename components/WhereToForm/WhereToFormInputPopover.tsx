@@ -1,35 +1,32 @@
 import type { FindCityWithConstraintsQuery } from '../../graphql/gen/graphql';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './WhereToFormInputPopover.module.css';
 
-type FindCityQueryRoutes = FindCityWithConstraintsQuery['routes'];
-type FindCityQueryDestination = FindCityQueryRoutes[0]['depart'];
-
 interface WhereToFormInputPopoverProps {
-	id: 'depart' | 'arrive';
-	routes?: FindCityQueryRoutes;
-	onDestinationClick: (destination: FindCityQueryDestination) => unknown;
+	destinations?: FindCityWithConstraintsQuery['destinations'];
+	onDestinationClick: (
+		destination: FindCityWithConstraintsQuery['destinations'][0]
+	) => unknown;
 }
 
 function WhereToFormInputPopover({
-	id,
-	routes,
+	destinations,
 	onDestinationClick,
 }: WhereToFormInputPopoverProps) {
-	if (!routes) {
+	if (!destinations) {
 		return null;
 	}
 
-	const handleClick = (destination: FindCityQueryDestination) => {
+	const handleClick = (
+		destination: FindCityWithConstraintsQuery['destinations'][0]
+	) => {
 		onDestinationClick(destination);
 	};
 
 	return (
 		<>
-			{routes.map(route => {
-				const destination = route[id];
-
+			{destinations.map(destination => {
 				return (
 					<button
 						className={styles.container}

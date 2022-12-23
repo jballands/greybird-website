@@ -2,6 +2,7 @@ input CityFilter {
 	id: ID
 	code: String
 	name: String
+	connectsWithId: ID
 }
 
 input RouteFilter {

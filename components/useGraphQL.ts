@@ -36,12 +36,14 @@ function useGraphQL<QueryResponse, Variables>(
 	}, [query, variables]);
 
 	const fetcher = useCallback(
-		async (q: string) => {
+		async ([_query, _variables]: [string, Variables]) => {
 			const requestBody: GraphQLRequest<Variables> = {
 				operationName,
-				query: q,
-				variables,
+				query: _query,
+				variables: _variables,
 			};
+
+			console.dir(requestBody);
 
 			const res = await fetch('/api/graphql', {
 				method: 'POST',
