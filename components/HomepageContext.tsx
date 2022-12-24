@@ -9,14 +9,15 @@ import React, {
 	useCallback,
 	useState,
 	ReactNode,
+	useMemo,
 } from 'react';
 import useGraphQL from './useGraphQL';
 
 type FetchRoutesQueryRoutes = FetchRoutesQuery['routes'];
 
 const routesQuery = /* GraphQL */ `
-	query fetchRoutes($depart: ID!, $arrive: ID) {
-		routes(filter: { depart: { id: $depart }, arrive: { id: $arrive } }) {
+	query fetchRoutes($depart: CityFilter!, $arrive: CityFilter) {
+		routes(filter: { depart: $depart, arrive: $arrive }) {
 			flightNumber
 			elevated
 			depart {
@@ -60,23 +61,23 @@ export function HomepageContext({ children }: HomepageContextProps) {
 	>();
 	const [arrivingAirport, setArrivingAirport] = useState<string | undefined>();
 
-	const getQueryParameters = useCallback((): FetchRoutesQueryVariables => {
+	const queryParams = useMemo((): FetchRoutesQueryVariables => {
 		if (!departingAirport || !arrivingAirport) {
 			return {
-				depart: 'aus',
+				depart: { id: 'aus' },
 				arrive: undefined,
 			};
 		}
 		return {
-			depart: departingAirport,
-			arrive: arrivingAirport,
+			depart: { id: departingAirport },
+			arrive: { id: arrivingAirport },
 		};
 	}, [arrivingAirport, departingAirport]);
 
 	const { data, isValidating } = useGraphQL<
 		FetchRoutesQuery,
 		FetchRoutesQueryVariables
-	>('fetchRoutes', routesQuery, getQueryParameters());
+	>('fetchRoutes', routesQuery, queryParams);
 
 	const value: HomepageContext = {
 		departingAirport,

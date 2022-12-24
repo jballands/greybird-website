@@ -43,8 +43,6 @@ function useGraphQL<QueryResponse, Variables>(
 				variables: _variables,
 			};
 
-			console.dir(requestBody);
-
 			const res = await fetch('/api/graphql', {
 				method: 'POST',
 				headers: {
@@ -57,10 +55,14 @@ function useGraphQL<QueryResponse, Variables>(
 
 			return data;
 		},
-		[operationName, variables]
+		[operationName]
 	);
 
-	const { data, error, isValidating } = useSWR<QueryResponse>(key, fetcher);
+	const { data, error, isValidating } = useSWR<QueryResponse>(key, fetcher, {
+		revalidateOnFocus: false,
+		revalidateIfStale: false,
+		revalidateOnReconnect: false,
+	});
 
 	return { data, error, isValidating };
 }

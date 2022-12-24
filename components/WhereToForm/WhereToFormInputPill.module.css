@@ -1,0 +1,40 @@
+.container {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+}
+
+.pill {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	font-size: 18px;
+	background-color: var(--bg-grey);
+	border-radius: 25px;
+	padding: 5px 5px 5px 15px;
+}
+
+.pillClear {
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	font-size: 14px;
+	text-transform: uppercase;
+	background-color: transparent;
+	border: none;
+	color: var(--muted);
+	background-color: var(--bg-dark);
+	margin-left: 15px;
+	position: relative;
+}
+
+.pillClear img {
+	filter: invert(0.4);
+}
+
+.pillClear:hover {
+	cursor: pointer;
+}

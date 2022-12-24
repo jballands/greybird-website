@@ -9,14 +9,20 @@ import React, {
 	useState,
 	useRef,
 	useContext,
+	useCallback,
 } from 'react';
 import ReactGlobeGL from 'react-globe.gl';
 import { useResizeDetector } from 'react-resize-detector';
-import useGraphQL from './useGraphQL';
 import styles from './Globe.module.css';
 import { useHomepage } from './HomepageContext';
 
 // const ReactGlobeGL = dynamic(() => import('react-globe.gl'));
+
+interface CameraCoordinates {
+	altitude: number;
+	lat: number;
+	lng: number;
+}
 
 interface Arc {
 	startLat: number;
@@ -60,6 +66,12 @@ const getInitialArcs = (initialRoutes: HomepageContext['routes']) => {
 	});
 };
 
+const DEFAULT_CAMERA_COORDINATES: CameraCoordinates = {
+	altitude: 1,
+	lat: 22.51,
+	lng: -81.43,
+};
+
 function Globe() {
 	const globeRef = useRef<GlobeMethods>();
 
@@ -68,58 +80,59 @@ function Globe() {
 	const { departingAirport, arrivingAirport, routes, isValidatingRoutes } =
 		useHomepage();
 
+	const noDefinedRoute = !departingAirport || !arrivingAirport;
+
+	const lookAt = useCallback(
+		(coordinates: CameraCoordinates, animateMs = 750) => {
+			globeRef.current?.pointOfView(coordinates, animateMs);
+		},
+		[]
+	);
+
+	// This effect disables the controls
 	useEffect(() => {
 		if (globeRef.current) {
 			globeRef.current.controls().enabled = false;
 		}
 	}, []);
 
-	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
-
+	// This effect sets the initial arcs, if necessary
 	useEffect(() => {
-		if (routes.length > 0) {
-			if (departingAirport && arrivingAirport) {
-				const route = routes[0];
+		if (noDefinedRoute && (arcs?.length ?? -1) < 2) {
+			setArcs(getInitialArcs(routes));
 
-				const depart = route.depart;
-				const arrive = route.arrive;
-
-				setArcs([
-					makeArc(
-						depart.coordinate,
-						arrive.coordinate,
-						['#FFC300', '#C70039'],
-						1
-					),
-				]);
-
-				// Set the point of view
-				if (globeRef.current) {
-					globeRef.current?.pointOfView(
-						{
-							altitude: 0.5,
-							lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
-							lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
-						},
-						750
-					);
-				}
-			} else {
-				setArcs(getInitialArcs(routes));
-
-				if (globeRef.current) {
-					globeRef.current?.pointOfView(
-						{
-							altitude: 1,
-							lat: 22.51,
-							lng: -81.43,
-						},
-						1000
-					);
-				}
-			}
+			// Set the point of view
+			lookAt(DEFAULT_CAMERA_COORDINATES);
 		}
-	}, [arrivingAirport, departingAirport, routes]);
+	}, [routes, arcs?.length, noDefinedRoute, lookAt]);
+
+	// This effect sets up the defined route if it can
+	useEffect(() => {
+		if (!noDefinedRoute && (arcs?.length ?? -1) > 1 && !isValidatingRoutes) {
+			const route = routes[0];
+
+			const depart = route.depart;
+			const arrive = route.arrive;
+
+			setArcs([
+				makeArc(
+					depart.coordinate,
+					arrive.coordinate,
+					['#FFC300', '#C70039'],
+					1
+				),
+			]);
+
+			// Set the point of view
+			lookAt({
+				altitude: 0.5,
+				lat: (arrive.coordinate.lat + depart.coordinate.lat) / 2,
+				lng: (arrive.coordinate.lng + depart.coordinate.lng) / 2 + 12,
+			});
+		}
+	}, [arcs?.length, isValidatingRoutes, lookAt, noDefinedRoute, routes]);
+
+	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
 
 	return (
 		<div className={styles.container} ref={resizeDetectorRef}>
@@ -138,13 +151,7 @@ function Globe() {
 					arcDashAnimateTime="animateTimeMs"
 					arcStroke={0.1}
 					arcsTransitionDuration={250}
-					onGlobeReady={() => {
-						globeRef.current?.pointOfView({
-							altitude: 1,
-							lat: 22.51,
-							lng: -81.43,
-						});
-					}}
+					onGlobeReady={() => lookAt(DEFAULT_CAMERA_COORDINATES, 0)}
 				/>
 			</Suspense>
 		</div>

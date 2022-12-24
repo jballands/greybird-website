@@ -5,6 +5,7 @@ import type {
 
 import React, { useEffect, useState, FormEvent, FocusEvent } from 'react';
 import useGraphQL from '../useGraphQL';
+import WhereToFormInputPill from './WhereToFormInputPill';
 import WhereToFormInputPopover from './WhereToFormInputPopover';
 import styles from './WhereToFormInput.module.css';
 
@@ -91,12 +92,7 @@ function WhereToFormInput({
 		<div className={styles.container} onBlur={handleBlur}>
 			<div className={styles.pseudoInput}>
 				{pill && (
-					<div className={styles.pillContainer}>
-						<div className={styles.pill}>{pill}</div>
-						<button className={styles.pillClear} onClick={handleClearInput}>
-							Clear
-						</button>
-					</div>
+					<WhereToFormInputPill value={pill} onClear={handleClearInput} />
 				)}
 				{!pill && (
 					<input
