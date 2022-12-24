@@ -6,7 +6,7 @@
  */
 
 import { useCallback } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 interface GraphQLRequest<V> {
 	operationName: string;
@@ -58,11 +58,10 @@ function useGraphQL<QueryResponse, Variables>(
 		[operationName]
 	);
 
-	const { data, error, isValidating } = useSWR<QueryResponse>(key, fetcher, {
-		revalidateOnFocus: false,
-		revalidateIfStale: false,
-		revalidateOnReconnect: false,
-	});
+	const { data, error, isValidating } = useSWRImmutable<QueryResponse>(
+		key,
+		fetcher
+	);
 
 	return { data, error, isValidating };
 }

@@ -134,6 +134,14 @@ function Globe() {
 
 	const { width, height, ref: resizeDetectorRef } = useResizeDetector();
 
+	const getArcDashInitialGap = useCallback(() => {
+		return Math.random();
+	}, []);
+
+	const handleGlobeReady = useCallback(() => {
+		lookAt(DEFAULT_CAMERA_COORDINATES, 0);
+	}, [lookAt]);
+
 	return (
 		<div className={styles.container} ref={resizeDetectorRef}>
 			<Suspense>
@@ -144,14 +152,14 @@ function Globe() {
 					animateIn={false}
 					globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
 					arcsData={arcs}
-					arcDashInitialGap={() => Math.random()}
+					arcDashInitialGap={getArcDashInitialGap}
 					arcColor="color"
 					arcDashLength="dashLength"
 					arcDashGap="dashGap"
 					arcDashAnimateTime="animateTimeMs"
 					arcStroke={0.1}
 					arcsTransitionDuration={250}
-					onGlobeReady={() => lookAt(DEFAULT_CAMERA_COORDINATES, 0)}
+					onGlobeReady={handleGlobeReady}
 				/>
 			</Suspense>
 		</div>
