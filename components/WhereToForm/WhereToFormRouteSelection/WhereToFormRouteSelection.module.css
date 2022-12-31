@@ -1,0 +1,20 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	margin: 25px 0;
+}
+
+.header {
+	display: flex;
+	flex-flow: column nowrap;
+	margin-bottom: 25px;
+}
+
+.searchResults {
+	font-style: italic;
+	color: var(--muted);
+}
+
+.selectAFlight {
+	font-size: 28px;
+}

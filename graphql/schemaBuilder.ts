@@ -83,9 +83,6 @@ const routesResolver = (filters?: InputMaybe<RouteFilter>): RouteModel[] => {
 
 	const { arrive, depart, elevated, flightNumber } = filters;
 
-	console.dir(depart);
-	console.dir(arrive);
-
 	// Filter the cities, if you can. This will return to you all the destinations that could
 	// match the filter
 	const matchingDepartures = depart ? destinationsResolver(depart) : undefined;

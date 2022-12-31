@@ -18,6 +18,7 @@ type FetchRoutesQueryRoutes = FetchRoutesQuery['routes'];
 const routesQuery = /* GraphQL */ `
 	query fetchRoutes($depart: CityFilter!, $arrive: CityFilter) {
 		routes(filter: { depart: $depart, arrive: $arrive }) {
+			id
 			flightNumber
 			elevated
 			depart {
