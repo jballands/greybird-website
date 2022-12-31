@@ -1,8 +1,7 @@
 import React, { Suspense, forwardRef } from 'react';
 import dynamic from 'next/dynamic';
-import WhereToForm from '../components/WhereToForm';
-import RouteSelection from '../components/RouteSelection';
 import { HomepageContext } from '../components/HomepageContext';
+import HomepageForm from '../components/HomepageForm';
 
 const Globe = dynamic(() => import('../components/Globe'), { ssr: false });
 
@@ -11,7 +10,7 @@ function destinations() {
 		<HomepageContext>
 			<main>
 				<Globe />
-				<WhereToForm />
+				<HomepageForm />
 			</main>
 		</HomepageContext>
 	);

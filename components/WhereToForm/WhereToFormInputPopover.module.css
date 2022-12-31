@@ -3,8 +3,10 @@
 	width: 100%;
 	top: 0;
 	background: var(--bg-dark);
-	border: 1px solid rgb(21, 32, 54);
-	padding: 7px 0;
+	border: 1px solid var(--bg-blue);
+	border-radius: 15px;
+	padding: 10px 0;
+	margin-top: 5px;
 	display: flex;
 	flex-flow: column nowrap;
 	z-index: 1;

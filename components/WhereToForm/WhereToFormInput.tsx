@@ -21,20 +21,23 @@ const findCityWithConstraintsQuery = /* GraphQL */ `
 	}
 `;
 
+type Destination = FindCityWithConstraintsQuery['destinations'][0];
+
 interface WhereToFormInputProps {
 	constraint?: string;
+	destination?: Destination;
 	placeholder: string;
-	onSelectDestination: (airportId?: string) => unknown;
+	onSelectDestination: (destination?: Destination) => unknown;
 }
 
 function WhereToFormInput({
 	constraint,
 	placeholder,
+	destination,
 	onSelectDestination,
 }: WhereToFormInputProps) {
 	const [textInput, setTextInput] = useState<string>('');
 	const [isFocused, setIsFocused] = useState(false);
-	const [pill, setPill] = useState<string | undefined>(undefined);
 
 	const { data, isValidating } = useGraphQL<
 		FindCityWithConstraintsQuery,
@@ -72,18 +75,14 @@ function WhereToFormInput({
 		});
 	};
 
-	const handleDestinationClick = (
-		destination: FindCityWithConstraintsQuery['destinations'][0]
-	) => {
-		onSelectDestination(destination.id);
-		setPill(destination.name);
+	const handleDestinationClick = (destination: Destination) => {
+		onSelectDestination(destination);
 		setIsFocused(false);
 	};
 
 	const handleClearInput = () => {
 		onSelectDestination(undefined);
 		setTextInput('');
-		setPill(undefined);
 	};
 
 	const canShowResults = (textInput?.length ?? -1) >= 3 && isFocused;
@@ -91,10 +90,13 @@ function WhereToFormInput({
 	return (
 		<div className={styles.container} onBlur={handleBlur}>
 			<div className={styles.pseudoInput}>
-				{pill && (
-					<WhereToFormInputPill value={pill} onClear={handleClearInput} />
+				{destination && (
+					<WhereToFormInputPill
+						value={destination.name}
+						onClear={handleClearInput}
+					/>
 				)}
-				{!pill && (
+				{!destination && (
 					<input
 						className={styles.input}
 						placeholder={placeholder}

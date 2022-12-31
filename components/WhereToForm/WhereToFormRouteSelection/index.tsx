@@ -10,15 +10,13 @@ function WhereToFormRouteSelection() {
 		return null;
 	}
 
-	console.dir(routes);
-
-	const routesString = routes.length !== 1 ? 'routes' : 'route';
+	const routesString = routes.length !== 1 ? 'flights' : 'flight';
 
 	return (
 		<div className={styles.container}>
 			<div className={styles.header}>
 				<span className={styles.searchResults}>
-					{routes.length} possible {routesString} found.
+					{routes.length} {routesString} found
 				</span>
 				<span className={styles.selectAFlight}>Select a flight.</span>
 			</div>

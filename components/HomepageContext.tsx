@@ -1,6 +1,7 @@
 import type {
 	FetchRoutesQuery,
 	FetchRoutesQueryVariables,
+	FindCityWithConstraintsQuery,
 } from '../graphql/gen/graphql';
 
 import React, {
@@ -13,7 +14,9 @@ import React, {
 } from 'react';
 import useGraphQL from './useGraphQL';
 
-type FetchRoutesQueryRoutes = FetchRoutesQuery['routes'];
+type Routes = FetchRoutesQuery['routes'];
+type Route = Routes[0];
+type Destination = FindCityWithConstraintsQuery['destinations'][0];
 
 const routesQuery = /* GraphQL */ `
 	query fetchRoutes($depart: CityFilter!, $arrive: CityFilter) {
@@ -40,13 +43,14 @@ const routesQuery = /* GraphQL */ `
 `;
 
 // ------------------------------------------------------------------------------
-
 export interface HomepageContext {
-	departingAirport?: string;
-	arrivingAirport?: string;
-	setDepartingAirport: (airportId?: string) => unknown;
-	setArrivingAirport: (airportId?: string) => unknown;
-	routes: FetchRoutesQueryRoutes;
+	departingAirport?: Destination;
+	arrivingAirport?: Destination;
+	selectedRoute?: Route;
+	setDepartingAirport: (airport?: Destination) => unknown;
+	setArrivingAirport: (airport?: Destination) => unknown;
+	setSelectedRoute: (route?: Route) => unknown;
+	routes: Routes;
 	isValidatingRoutes: boolean;
 }
 
@@ -57,10 +61,9 @@ interface HomepageContextProps {
 }
 
 export function HomepageContext({ children }: HomepageContextProps) {
-	const [departingAirport, setDepartingAirport] = useState<
-		string | undefined
-	>();
-	const [arrivingAirport, setArrivingAirport] = useState<string | undefined>();
+	const [departingAirport, setDepartingAirport] = useState<Destination>();
+	const [arrivingAirport, setArrivingAirport] = useState<Destination>();
+	const [selectedRoute, setSelectedRoute] = useState<Route>();
 
 	const queryParams = useMemo((): FetchRoutesQueryVariables => {
 		if (!departingAirport || !arrivingAirport) {
@@ -70,8 +73,8 @@ export function HomepageContext({ children }: HomepageContextProps) {
 			};
 		}
 		return {
-			depart: { id: departingAirport },
-			arrive: { id: arrivingAirport },
+			depart: { id: departingAirport.id },
+			arrive: { id: arrivingAirport.id },
 		};
 	}, [arrivingAirport, departingAirport]);
 
@@ -85,6 +88,8 @@ export function HomepageContext({ children }: HomepageContextProps) {
 		arrivingAirport,
 		setDepartingAirport,
 		setArrivingAirport,
+		selectedRoute,
+		setSelectedRoute,
 		routes: data?.routes ?? [],
 		isValidatingRoutes: isValidating,
 	};

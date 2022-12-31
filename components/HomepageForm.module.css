@@ -1,0 +1,11 @@
+.container {
+	position: absolute;
+	top: 20vh;
+	right: 0;
+	width: 40vw;
+	height: 100%;
+	padding-right: 50px;
+	display: flex;
+	flex-flow: column;
+	justify-content: flex-start;
+}
